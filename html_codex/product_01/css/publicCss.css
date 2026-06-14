@@ -1,0 +1,114 @@
+
+:root{
+    --Primary-color:#0676e9;
+    --Secondary-color:#333333;
+
+    --color-black:#333333;
+    --color-gray:#666666;
+    --color-white:#ffffff;
+    --color-grayWhite:rgba(255,255,255,0.8);
+    
+    --Footer-color:#223560;
+
+    --color-text-primary:var(--color-black);
+    --color-text-secondary:var(--color-gray);
+    --color-text-inverse-primary:var(--color-white);
+    --color-text-inverse-secondary:var(--color-grayWhite);
+
+    --lineHeight:1;
+    --inputHeight:90px;
+
+}
+
+/* 文字渐变色 */
+
+.linear{
+    background-image: linear-gradient(90deg,#79e2ff,#3683ff 80%);
+    display: inline-block;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+}
+/* 
+<a href="##" class="more_a"><svg t="1780554270512" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2506" width="20" height="20"><path d="M534.826667 935.466667a47.36 47.36 0 0 1-66.986667-66.773334L835.413333 501.333333 467.84 133.973333a47.36 47.36 0 1 1 66.986667-66.773333l400.64 400.64a47.36 47.36 0 0 1 0 66.986667z" fill="#ffffff" p-id="2507"></path></svg></a>
+ */
+.more_a{
+    display: flex;flex-wrap: wrap;width:50px;height:50px;border-radius: 5px;overflow: hidden;border:1px solid #ffffff;
+    justify-content: center;align-items: center;transition:all 0.3s ease-in-out;
+}
+.more_a svg{transform: translateX(-3px);}
+.more_a:hover{
+    background-color: #3683ff;border-color: #3683ff;
+}
+@media screen and (max-width: 1600px) {
+    .more_a{width:40px;height:40px;}
+    .more_a svg{transform: scale(0.8) translateX(-3px);}
+
+}
+@media screen and (max-width: 1400px) {
+    .more_a{width:30px;height:30px;}
+    .more_a svg{transform: scale(0.6) translateX(-3px);}
+
+}
+/* 
+<a href="##" class="primary_btn">
+    <div class="btn_container">
+        <div class="button_text" text="立即与我们联系！">立即与我们联系！</div>
+    </div>
+</a>
+*/
+
+.primary_btn {
+    display: inline-block;
+    color: #fff;
+    border:1px solid #fff;
+    border-radius: 50px;
+    padding: .6rem 1.9rem .6rem;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    overflow: visible;
+}
+.primary_btn.bg{background-color: #fff;color:#333}
+.primary_btn:hover{color:#fff;}
+.primary_btn.bg:hover{color:#333;}
+.primary_btn .btn_container {
+    z-index: 5;
+    position: relative;
+    overflow: hidden;
+}
+.primary_btn .button_text {
+    text-align: center;
+    letter-spacing: 0;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.4em;
+    position: relative;
+    transition:all 0.3s ease-in-out;
+}
+.primary_btn .button_text:after{
+    content: attr(text);
+    position: absolute;
+    transform: translateY(100%);
+    left:0px;top:0px;
+}
+.primary_btn:hover .button_text{transform:translateY(-100%);}
+
+
+.footer .erm {margin-right: 30px;}
+.footer .erm li{position: relative;margin-right: 20px;cursor: pointer;}
+.footer .tc{width:120px;height:120px;position:absolute;bottom:50px;left:50%;transform:translateX(-50%);display: none;border-radius: 10px;border:2px solid #fff;overflow:hidden;background-color: #fff;}
+.footer .tc img{width:100%;height: 100%;object-fit: cover;}
+.footer .erm li:hover .tc{display: block;animation: displayN 0.5s forwards;}
+.footer .right{align-items: center;}
+.footer .right a{color:rgba(255,255,255,0.6);margin-left: 10px;}
+
+@media screen and (max-width: 768px) {
+    .footer .left{margin-bottom: 8vw;text-align: center;flex:0 0 100%;}
+    .footer .right{justify-content: center;}
+    .footer .erm li{margin:0 2vw;}
+    .footer .erm{margin-right: 0px;margin-bottom: 3vw;}
+    .footer .right p{flex:0 0 100%;text-align: center;}
+    .footer .right p a{display: flex;flex:0 0 100%;justify-content: center;margin-left: 0px;}
+}

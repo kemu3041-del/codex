@@ -1,0 +1,233 @@
+.mo_img {
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+    .pc_img {
+        display: none;
+    }
+
+    .mo_img {
+        display: block;
+    }
+}
+
+.css_banner {
+    position: relative;
+    background: #000;
+}
+
+.css_banner .swiper-slide {
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.css_banner .slide-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 2;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.css_banner .banner_img img {
+    width: 100%;
+    opacity: 0;
+}
+
+.css_banner .swiper-slide video {
+    width: 100%;
+    display: block;
+    height: 100%;
+    object-fit: cover;
+}
+
+.css_banner .swiper-horizontal>.swiper-pagination-bullets {
+    top: 90vh;
+}
+
+.css_banner .swiper-pagination-bullet {
+    width: 80px;
+    height: 1px;
+    background-color: #fff;
+    border-radius: 0px;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+}
+
+.css_banner .swiper-pagination-bullet.swiper-pagination-bullet-active {
+    width: 120px;
+    height: 3px;
+}
+
+.css_banner .text {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%,-50%);
+    color: #fff;
+    z-index: 5;
+    
+}
+.css_banner .textCenter {
+    text-align: center;
+}
+
+.css_banner .text img {
+    max-width: 100%;
+}
+
+.css_banner .text h3 {
+    font-weight: 700;
+    overflow: hidden;
+}
+
+.css_banner .text h3 span {
+    opacity: 0;
+    position: relative;
+    transform: translateY(25px);
+    display: inline-block;
+    min-width: 15px;
+}
+.css_banner .text .p{overflow: hidden;}
+.css_banner .text .p span {
+    opacity: 0;
+    position: relative;
+    transform: translateY(25px);
+    display: inline-block;
+    min-width: 15px;
+}
+
+.css_banner .swiper-slide:after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    left: 0px;
+    top: 80%;
+    background-size: cover !important;
+    background: url(https://omo-oss-image.thefastimg.com/portal-saas/pg2025041611420743647/cms/image/2609c483-4669-4747-bbe4-756a7258e61e.png) no-repeat center bottom;
+    z-index: 3;
+}
+
+#videoModal {
+    display: none;
+}
+
+.video_close {
+    z-index: 99;
+}
+
+.video_btn {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+}
+
+.video_btn svg {
+    width: 100%;
+    height: 100%;
+}
+
+.touch_body_banner .video_btn {
+    display: block;
+}
+
+.touch_body_banner .css_banner .swiper-slide video {
+    display: none;
+}
+
+.touch_body_banner .css_banner .swiper-slide {
+    height: 70vh;
+}
+
+.css_banner .swiper-horizontal>.swiper-pagination-bullets {
+    bottom: 10%;
+}
+
+.isFENV .css_banner .swiper-slide {
+    height: 100%;
+}
+
+@media screen and (max-width: 1700px) {
+    .css_banner .swiper-horizontal>.swiper-pagination-bullets {
+        top: 95%;
+    }
+}
+
+@media screen and (max-width: 1600px) {
+    .css_banner .text {
+        top: 60vh;
+    }
+
+    .css_banner .swiper-horizontal>.swiper-pagination-bullets {
+        top: 75vh;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    .css_banner .swiper-pagination-bullet.swiper-pagination-bullet-active {
+        width: 80px;
+    }
+
+    .css_banner .swiper-pagination-bullet {
+        width: 40px;
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    .css_banner .text {
+        top: 55%;
+    }
+
+    .css_banner .swiper-horizontal>.swiper-pagination-bullets {
+        top: 80%;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .css_banner .text dt {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .css_banner .swiper-slide {
+        height: 70vh;
+    }
+
+    .css_banner .text {
+        width: 90%;
+    }
+
+    .css_banner .text h3 {
+        font-size: 24px;
+    }
+
+    .css_banner .text p {
+        font-size: 16px;
+    }
+
+    .css_banner .text .img img {
+        width: 70%;
+    }
+
+    .css_banner .swiper-pagination-bullet.swiper-pagination-bullet-active {
+        width: 20px;
+    }
+
+    .css_banner .swiper-pagination-bullet {
+        width: 13px;
+        height: 2px;
+        margin: 0 2px;
+    }
+}
