@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>土豆短片 - 15秒卡通竖屏</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="video-page" aria-label="土豆卡通短片预览">
+      <section class="phone-frame" aria-label="9比16视频画面">
+        <div class="stage" id="potatoStage">
+          <div class="sun" data-layout-ignore></div>
+          <div class="cloud cloud-a" data-layout-ignore></div>
+          <div class="cloud cloud-b" data-layout-ignore></div>
+
+          <section class="scene scene-1 is-active" id="scene1" aria-label="拉车走在泥泞路上">
+            <div class="hills" data-layout-ignore></div>
+            <div class="road road-1"></div>
+            <div class="mud-spots mud-spots-a" data-layout-ignore></div>
+            <div class="cart-group" id="cartGroup">
+              <div class="person" aria-hidden="true">
+                <div class="head"></div>
+                <div class="hat"></div>
+                <div class="body"></div>
+                <div class="arm arm-left"></div>
+                <div class="arm arm-right"></div>
+                <div class="leg leg-left"></div>
+                <div class="leg leg-right"></div>
+              </div>
+              <div class="rope"></div>
+              <div class="cart">
+                <div class="potato-stack">
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cart-box"></div>
+                <div class="wheel wheel-left"></div>
+                <div class="wheel wheel-right"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="scene scene-2" id="scene2" aria-label="土豆掉到地上">
+            <div class="hills" data-layout-ignore></div>
+            <div class="road road-2"></div>
+            <div class="bump"></div>
+            <div class="cart-group cart-group-bumpy" id="bumpyCart">
+              <div class="person" aria-hidden="true">
+                <div class="head"></div>
+                <div class="hat"></div>
+                <div class="body"></div>
+                <div class="arm arm-left"></div>
+                <div class="arm arm-right"></div>
+                <div class="leg leg-left"></div>
+                <div class="leg leg-right"></div>
+              </div>
+              <div class="rope"></div>
+              <div class="cart">
+                <div class="potato-stack">
+                  <span></span><span></span><span></span><span></span>
+                </div>
+                <div class="cart-box"></div>
+                <div class="wheel wheel-left"></div>
+                <div class="wheel wheel-right"></div>
+              </div>
+            </div>
+            <div class="falling-potato" id="fallingPotato"></div>
+            <div class="impact-lines" id="impactLines" data-layout-ignore>
+              <i></i><i></i><i></i>
+            </div>
+          </section>
+
+          <section class="scene scene-3" id="scene3" aria-label="土豆睁开眼睛">
+            <div class="close-ground"></div>
+            <div class="leaf leaf-a" data-layout-ignore></div>
+            <div class="leaf leaf-b" data-layout-ignore></div>
+            <div class="awake-potato" id="awakePotato">
+              <div class="eye eye-left"></div>
+              <div class="eye eye-right"></div>
+              <div class="mouth"></div>
+              <div class="cheek cheek-left"></div>
+              <div class="cheek cheek-right"></div>
+            </div>
+            <div class="sparkles" id="sparkles" data-layout-ignore>
+              <i></i><i></i><i></i><i></i>
+            </div>
+          </section>
+
+          <section class="scene scene-4" id="scene4" aria-label="土豆跑进树林">
+            <div class="forest">
+              <div class="tree tree-1"></div>
+              <div class="tree tree-2"></div>
+              <div class="tree tree-3"></div>
+              <div class="tree tree-4"></div>
+              <div class="tree tree-5"></div>
+            </div>
+            <div class="forest-path"></div>
+            <div class="running-potato" id="runningPotato">
+              <div class="eye eye-left"></div>
+              <div class="eye eye-right"></div>
+              <div class="mouth"></div>
+              <div class="run-leg run-leg-left"></div>
+              <div class="run-leg run-leg-right"></div>
+            </div>
+            <div class="finish-burst" id="finishBurst" data-layout-ignore>
+              <i></i><i></i><i></i><i></i><i></i>
+            </div>
+          </section>
+
+          <div class="transition-mud" id="transitionMud" data-layout-ignore>
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+
+          <div class="caption caption-1" id="caption1">一个人拉着满满一车土豆</div>
+          <div class="caption caption-2" id="caption2">泥路一颠，一个土豆掉了下来</div>
+          <div class="caption caption-3" id="caption3">它睁开眼睛，开心地笑了</div>
+          <div class="caption caption-4" id="caption4">然后蹦蹦跳跳跑进树林</div>
+        </div>
+      </section>
+
+      <button class="replay-button" type="button" id="replayButton">重新播放</button>
+    </main>
+
+    <script src="../../../js/gsap.min.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

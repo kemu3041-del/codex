@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Design Page</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style>
+        :root {
+  --page-bg: #c7c7c7;
+  --surface: #ececec;
+  --surface-soft: #dbdbdb;
+  --text: #010101;
+  --muted: #5c5c5c;
+  --line: #9f9f9f;
+  --accent: #966934;
+  --accent-strong: #7b562b;
+  --accent-soft: #beb6ad;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--page-bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.design-page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 56px;
+}
+
+.design-page__reference {
+  margin: 0 0 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.design-page__reference img {
+  width: 100%;
+  max-height: 420px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.design-page__reference figcaption {
+  padding: 10px 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.design-page__eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent-strong);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.design-page h1,
+.design-page h2,
+.design-page p {
+  margin: 0;
+}
+
+.design-page h1 {
+  font-size: 44px;
+  line-height: 1.08;
+}
+
+.design-page h2 {
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.design-page__lead,
+.design-page p {
+  color: var(--muted);
+}
+
+.design-page__button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 18px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 760;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.design-page__button:hover {
+  transform: translateY(-1px);
+}
+
+.design-page__button--primary {
+  border-color: transparent;
+  background: var(--accent);
+  color: #fff;
+}
+
+.design-page__nav {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.design-page__brand {
+  font-weight: 900;
+}
+
+.design-page__nav nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.design-page__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 36px;
+  align-items: center;
+  min-height: 540px;
+}
+
+.design-page__hero-copy {
+  display: grid;
+  gap: 18px;
+}
+
+.design-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.design-page__hero-media {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.12);
+}
+
+.design-page__hero-media img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.design-page__feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.design-page__feature-grid article {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: var(--surface);
+}
+
+.design-page__feature-grid span {
+  color: var(--accent-strong);
+  font-weight: 850;
+}
+
+.design-page [data-reveal] {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.design-page .is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 760px) {
+  .design-page {
+    width: min(100% - 24px, 1180px);
+  }
+
+  .design-page h1 {
+    font-size: 32px;
+  }
+
+  .design-page__nav,
+  .design-page__hero,
+  .design-page__module,
+  .design-page__dashboard-head,
+  .design-page__dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .design-page__nav nav {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
+    </style>
+  </head>
+  <body>
+    <main class="design-page" data-design-type="landing">
+      <!-- CMS: 替换标题、描述、按钮链接、图片路径和列表内容。 -->
+      <figure class="design-page__reference" aria-label="设计图参考">
+        <img src="./WX20260622-113844.png" alt="上传的设计图参考" />
+        <figcaption>1455 x 595px · 落地页</figcaption>
+      </figure>
+      <header class="design-page__nav">
+        <a class="design-page__brand" href="#">Brand</a>
+        <nav aria-label="主导航">
+          <a href="#features">Highlights</a>
+          <a href="#details">Details</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <section class="design-page__hero">
+        <div class="design-page__hero-copy">
+          <p class="design-page__eyebrow">Design matched structure</p>
+          <h1>把设计图拆成可维护的页面结构</h1>
+          <p class="design-page__lead">这里替换为页面主卖点。结构已预留标题、副标题、按钮、媒体区域和内容卡片，方便接入 CMS 字段。</p>
+          <div class="design-page__actions">
+            <a class="design-page__button design-page__button--primary" href="#">主要操作</a>
+            <a class="design-page__button" href="#">查看详情</a>
+          </div>
+        </div>
+        <div class="design-page__hero-media">
+          <img src="./WX20260622-113844.png" alt="页面主视觉" />
+        </div>
+      </section>
+
+      <section class="design-page__feature-grid" id="features">
+        <article>
+          <span>01</span>
+          <h2>布局层级</h2>
+          <p>根据上传图比例生成首屏和内容网格，后续可继续细化成真实页面。</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>色彩变量</h2>
+          <p>主色、背景、文字和边框已整理成 CSS 变量，方便统一替换。</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>交互预留</h2>
+          <p>JS 中保留入场状态和按钮事件绑定位置，适合继续接真实数据。</p>
+        </article>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>

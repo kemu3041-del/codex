@@ -1,0 +1,32 @@
+export const cmsResources = [
+  {
+    slug: "dashboard-template",
+    moduleTitle: "运营看板模板",
+    moduleType: "SaaS",
+    moduleSummary: "适合指标卡、趋势图、列表和筛选组合的后台首页。",
+    targetScene: "SaaS 后台首页",
+    priority: "高",
+    fields: ["title", "metrics", "chartData", "tableRows"],
+    deliveryNote: "字段适配后可替换为真实接口，图表区域后续接入 ECharts 或平台图表组件。",
+  },
+  {
+    slug: "article-hub",
+    moduleTitle: "内容资讯中心",
+    moduleType: "CMS",
+    moduleSummary: "适合栏目、文章列表、推荐内容和详情页组合。",
+    targetScene: "CMS 内容站",
+    priority: "中",
+    fields: ["title", "summary", "cover", "category", "body"],
+    deliveryNote: "列表页负责筛选，详情页按 slug 读取内容，字段名可由适配层统一转换。",
+  },
+  {
+    slug: "product-landing",
+    moduleTitle: "产品展示落地页",
+    moduleType: "Marketing",
+    moduleSummary: "适合 Hero、功能模块、案例和表单线索收集。",
+    targetScene: "产品官网或活动页",
+    priority: "高",
+    fields: ["heroTitle", "heroMedia", "features", "cases", "cta"],
+    deliveryNote: "动效配置和内容字段分离，方便在 SaaS 平台中替换内容但保留交互节奏。",
+  },
+];

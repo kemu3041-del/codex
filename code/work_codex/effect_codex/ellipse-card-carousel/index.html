@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Radial Image Card Carousel</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+  <main class="radial-demo" aria-label="扇形图片卡片轮播">
+    <section class="radial-stage">
+      <div class="arc-mask">
+        <div class="arc-guide" aria-hidden="true"></div>
+        <div class="card-stage" id="cardStage" aria-live="polite"></div>
+      </div>
+
+      <div class="control-bar" aria-label="轮播控制">
+        <button class="nav-button" type="button" data-direction="prev" aria-label="上一组">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <div class="active-copy">
+          <span id="activeNumber">01</span>
+          <strong id="activeTitle">Pixelate Render</strong>
+        </div>
+        <button class="nav-button" type="button" data-direction="next" aria-label="下一组">
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+
+      <aside class="logic-strip" aria-label="椭圆布局学习提示">
+        <span>上半椭圆角度：210° ~ 330°</span>
+        <span>x = cx + rx * cos(angle)</span>
+        <span>rotation = tangent(angle)</span>
+      </aside>
+    </section>
+  </main>
+
+  <script src="./js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Curved Image Link Layout</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/main.js" defer></script>
+</head>
+<body>
+  <main class="demo-page">
+    <section class="link-showcase" aria-labelledby="page-title">
+      <div class="showcase-copy">
+        <p class="eyebrow">CSS Layout + SVG Curve</p>
+        <h1 id="page-title">两张图片的曲线连接布局</h1>
+        <p>
+          图片、标题和尺寸都写在 HTML 结构里，后期接 SaaS/CMS 时直接替换图片地址、文字和尺寸 class。
+        </p>
+      </div>
+
+      <div class="layout-grid">
+        <article class="curve-card">
+          <div class="image-link image-link--equal" style="--left-size: 76px; --right-size: 76px;">
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/power.svg" alt="Power">
+              </div>
+              <span>Power</span>
+            </div>
+
+            <svg class="connector-frame" aria-hidden="true">
+              <path class="connector-path"></path>
+            </svg>
+
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/land.svg" alt="Land">
+              </div>
+              <span>Land</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="curve-card">
+          <div class="image-link image-link--mixed" style="--left-size: 96px; --right-size: 68px;">
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/power.svg" alt="大型 Power 图标">
+              </div>
+              <span>Large</span>
+            </div>
+
+            <svg class="connector-frame" aria-hidden="true">
+              <path class="connector-path"></path>
+            </svg>
+
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/land.svg" alt="小型 Land 图标">
+              </div>
+              <span>Small</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="curve-card curve-card--wide">
+          <div class="image-link image-link--wide" style="--left-size: 72px; --right-size: 110px;">
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/power.svg" alt="左侧图片">
+              </div>
+              <span>Source</span>
+            </div>
+
+            <svg class="connector-frame" aria-hidden="true">
+              <path class="connector-path"></path>
+            </svg>
+
+            <div class="image-node">
+              <div class="image-frame">
+                <img src="./img/land.svg" alt="右侧图片">
+              </div>
+              <span>Target</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

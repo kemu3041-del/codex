@@ -1,0 +1,217 @@
+:root {
+  --page-bg: #160b38;
+  --panel-bg: #26104e;
+  --panel-bg-strong: #31145f;
+  --text: #fff8d8;
+  --muted: rgba(255, 248, 216, 0.68);
+  --accent: #ffd83d;
+  --line: rgba(255, 224, 104, 0.78);
+  --ring: rgba(255, 245, 174, 0.42);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 50% 10%, rgba(112, 59, 188, 0.42), transparent 34rem),
+    linear-gradient(145deg, #12082e 0%, #241052 52%, #12072b 100%);
+}
+
+.demo-page {
+  width: min(1120px, calc(100% - 32px));
+  min-height: 100vh;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+  padding: 48px 0;
+}
+
+.link-showcase {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.86fr) minmax(0, 1.4fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.showcase-copy {
+  max-width: 360px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  font-size: 36px;
+  line-height: 1.14;
+  font-weight: 800;
+}
+
+.showcase-copy p:last-child {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.curve-card {
+  min-height: 190px;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 52% 42%, rgba(255, 212, 74, 0.18), transparent 8rem),
+    linear-gradient(145deg, rgba(68, 26, 119, 0.88), rgba(29, 12, 66, 0.92));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+}
+
+.curve-card--wide {
+  grid-column: 1 / -1;
+}
+
+.image-link {
+  --left-size: 76px;
+  --right-size: 76px;
+  --gap: clamp(70px, 15vw, 176px);
+  --outline-offset: 7px;
+  --connector-spread: 0.42;
+  --connector-waist: 8px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  width: min(100%, calc(var(--left-size) + var(--right-size) + var(--gap)));
+  min-height: calc(max(var(--left-size), var(--right-size)) + 28px);
+}
+
+.image-link--mixed {
+  --gap: clamp(78px, 16vw, 160px);
+}
+
+.image-link--wide {
+  --gap: clamp(112px, 24vw, 250px);
+}
+
+.image-node {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 13px;
+  line-height: 1;
+  text-align: center;
+}
+
+.image-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.image-node:first-child img {
+  width: var(--left-size);
+  height: var(--left-size);
+}
+
+.image-node:last-child img {
+  width: var(--right-size);
+  height: var(--right-size);
+}
+
+.image-node img {
+  position: relative;
+  z-index: 3;
+  display: block;
+  object-fit: cover;
+  border-radius: 22%;
+  background: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--ring),
+    0 0 0 7px rgba(255, 232, 115, 0.08),
+    0 16px 34px rgba(0, 0, 0, 0.34),
+    0 0 24px rgba(255, 209, 43, 0.45);
+}
+
+.connector-frame {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.connector-path {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 4px rgba(255, 216, 61, 0.35));
+}
+
+@media (max-width: 840px) {
+  .link-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .showcase-copy {
+    max-width: 620px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 620px) {
+  .demo-page {
+    width: min(100% - 24px, 480px);
+    padding: 28px 0;
+  }
+
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .curve-card--wide {
+    grid-column: auto;
+  }
+
+  .curve-card {
+    min-height: 176px;
+    padding: 18px;
+  }
+
+  .image-link,
+  .image-link--mixed,
+  .image-link--wide {
+    --gap: clamp(52px, 18vw, 88px);
+  }
+}

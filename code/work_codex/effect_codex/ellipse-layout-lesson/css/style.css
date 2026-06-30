@@ -1,0 +1,529 @@
+:root {
+  color-scheme: dark;
+  --bg: #050505;
+  --panel: rgba(18, 19, 17, 0.82);
+  --line: rgba(255, 255, 255, 0.14);
+  --line-strong: rgba(255, 255, 255, 0.28);
+  --text: #f5f1e8;
+  --muted: #aaa69a;
+  --faint: #626158;
+  --green: #86e7bd;
+  --amber: #e8c26a;
+  --blue: #80b8ff;
+  --red: #ef6a5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  margin: 0;
+  background: var(--bg);
+}
+
+body {
+  color: var(--text);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+}
+
+.lesson-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 22% 22%, rgba(128, 184, 255, 0.11), transparent 24rem),
+    radial-gradient(circle at 74% 28%, rgba(134, 231, 189, 0.12), transparent 24rem),
+    linear-gradient(180deg, #060606 0%, #020202 100%);
+}
+
+.lesson-board {
+  display: grid;
+  width: min(1500px, 100%);
+  grid-template-columns: minmax(0, 1.25fr) 380px;
+  grid-template-rows: auto minmax(560px, 1fr);
+  gap: 18px;
+}
+
+.lesson-header,
+.visual-panel,
+.explain-panel {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), transparent 36%),
+    var(--panel);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(16px);
+}
+
+.lesson-header {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(300px, 0.9fr);
+  gap: 24px;
+  align-items: end;
+  padding: 28px 34px;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--green);
+  font-size: 0.76rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.lesson-header h1 {
+  max-width: 12em;
+  margin: 0;
+  font-size: clamp(2rem, 4.4vw, 4.7rem);
+  line-height: 0.98;
+  font-weight: 820;
+}
+
+.lesson-header p:not(.eyebrow) {
+  max-width: 46rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.visual-panel {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+}
+
+.grid-layer path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.045);
+  stroke-width: 1;
+}
+
+.axis-line {
+  stroke: var(--blue);
+  stroke-width: 2;
+  stroke-linecap: round;
+  marker-end: url("#arrow");
+}
+
+.axis-label,
+.formula-tag,
+.angle-label,
+.center-label,
+.point-label {
+  fill: var(--text);
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.axis-label {
+  fill: var(--blue);
+}
+
+.ellipse-shadow {
+  fill: rgba(134, 231, 189, 0.035);
+  stroke: none;
+}
+
+.ellipse-path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.14);
+  stroke-width: 2;
+  stroke-dasharray: 10 10;
+}
+
+.arc-path {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 4;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 12px rgba(134, 231, 189, 0.4));
+}
+
+.angle-sector {
+  fill: rgba(232, 194, 106, 0.16);
+  stroke: rgba(232, 194, 106, 0.55);
+  stroke-width: 1;
+}
+
+.angle-arc {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.angle-label {
+  fill: var(--amber);
+}
+
+.projection-line {
+  stroke: rgba(128, 184, 255, 0.75);
+  stroke-width: 2;
+  stroke-dasharray: 7 7;
+}
+
+.formula-tag {
+  fill: var(--blue);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+}
+
+.radius-line {
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 2;
+}
+
+.tangent-line {
+  stroke: var(--red);
+  stroke-width: 4;
+  stroke-linecap: round;
+  marker-end: url("#arrow");
+  filter: drop-shadow(0 0 10px rgba(239, 106, 94, 0.35));
+}
+
+.center-dot {
+  fill: var(--blue);
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.active-dot {
+  fill: var(--green);
+  stroke: #fff;
+  stroke-width: 3;
+  cursor: grab;
+  filter: drop-shadow(0 0 14px rgba(134, 231, 189, 0.6));
+}
+
+.active-dot:active {
+  cursor: grabbing;
+}
+
+.slot-dot {
+  fill: rgba(255, 255, 255, 0.28);
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1.5;
+}
+
+.slot-card {
+  fill: rgba(20, 22, 19, 0.82);
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1;
+}
+
+.slot-card.is-center {
+  fill: rgba(134, 231, 189, 0.18);
+  stroke: rgba(134, 231, 189, 0.9);
+}
+
+.slot-text {
+  fill: rgba(245, 241, 232, 0.85);
+  font-size: 12px;
+  font-weight: 800;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.floating-card {
+  position: absolute;
+  left: 50%;
+  top: 28.4%;
+  z-index: 3;
+  display: grid;
+  width: 154px;
+  height: 92px;
+  place-content: center;
+  gap: 8px;
+  border: 1px solid rgba(134, 231, 189, 0.6);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(134, 231, 189, 0.2), transparent 54%),
+    rgba(12, 14, 12, 0.92);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42);
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  pointer-events: none;
+}
+
+.floating-card span {
+  color: var(--green);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.floating-card strong {
+  font-size: 1rem;
+}
+
+.explain-panel {
+  display: grid;
+  grid-template-rows: auto auto auto auto auto auto 1fr;
+  gap: 18px;
+  padding: 26px;
+  max-height: calc(100vh - 210px);
+  overflow: auto;
+}
+
+.step-readout span {
+  color: var(--green);
+  font-weight: 850;
+}
+
+.step-readout h2 {
+  margin: 12px 0 0;
+  font-size: 1.8rem;
+  line-height: 1.08;
+}
+
+.step-readout p {
+  margin: 18px 0 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.formula-box {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.formula-box code {
+  color: #d8d6ca;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.experiment-panel {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.panel-heading span {
+  color: var(--green);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.panel-heading p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.range-control {
+  display: grid;
+  gap: 6px;
+}
+
+.range-control span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.range-control b {
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.range-control input {
+  width: 100%;
+  accent-color: var(--green);
+}
+
+.preset-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preset-row button {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.055);
+  cursor: pointer;
+}
+
+.preset-row button:hover {
+  border-color: rgba(134, 231, 189, 0.72);
+  color: var(--text);
+  background: rgba(134, 231, 189, 0.12);
+}
+
+.live-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.live-panel div {
+  display: grid;
+  gap: 5px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.live-panel span {
+  color: var(--faint);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.live-panel strong {
+  color: var(--text);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.86rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.offset-table {
+  display: grid;
+  gap: 6px;
+  max-height: 180px;
+  overflow: auto;
+}
+
+.offset-row {
+  display: grid;
+  grid-template-columns: 48px 1fr 68px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.18);
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 0.72rem;
+}
+
+.offset-row.is-active {
+  border-color: rgba(134, 231, 189, 0.62);
+  color: var(--text);
+  background: rgba(134, 231, 189, 0.1);
+}
+
+.offset-row span:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-controls,
+.step-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.lesson-controls button,
+.step-list button {
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.065);
+  cursor: pointer;
+}
+
+.lesson-controls button {
+  padding: 0 15px;
+}
+
+.step-list button {
+  padding: 0 13px;
+  color: var(--muted);
+}
+
+.lesson-controls button:hover,
+.step-list button:hover,
+.step-list button.is-active {
+  border-color: rgba(134, 231, 189, 0.72);
+  color: var(--text);
+  background: rgba(134, 231, 189, 0.12);
+}
+
+.lesson-controls button:focus-visible,
+.step-list button:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+}
+
+@media (max-width: 1080px) {
+  .lesson-board {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .lesson-header {
+    grid-template-columns: 1fr;
+  }
+
+  .explain-panel {
+    grid-template-rows: auto;
+    max-height: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .lesson-shell {
+    padding: 12px;
+  }
+
+  .lesson-header,
+  .explain-panel {
+    padding: 20px;
+  }
+
+  .visual-panel,
+  .diagram {
+    min-height: 480px;
+  }
+
+  .floating-card {
+    width: 126px;
+    height: 80px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

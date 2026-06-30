@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>老客续费 Agent 分析报告工具</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="simple-header">
+        <div>
+          <p class="eyebrow">Renewal Agent Workflow</p>
+          <h1>续费分析</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn ghost" id="sampleBtn" type="button">填充示例</button>
+          <button class="btn secondary" id="resetBtn" type="button">重置</button>
+          <button class="btn primary" id="printBtn" type="button" disabled>打印报告</button>
+        </div>
+      </header>
+
+      <section class="page-content">
+        <section class="workspace">
+            <section class="panel-section control-panel" aria-label="客户信息与分析配置">
+              <div class="section-heading">
+                <span class="required">*</span>
+                <div>
+                  <h2>客户信息</h2>
+                  <p>输入客户全称和官网网址，用于生成续费分析报告。</p>
+                </div>
+              </div>
+              <form class="analysis-form" id="analysisForm">
+                <div class="form-grid">
+                  <label class="field span-2">
+                    <span>客户名称全称</span>
+                    <input id="customerName" type="text" placeholder="例如：上海某某智能科技有限公司" autocomplete="organization" required />
+                  </label>
+                  <label class="field span-2">
+                    <span>客户官网网址</span>
+                    <input id="websiteUrl" type="url" placeholder="https://www.example.com" autocomplete="url" required />
+                  </label>
+                  <label class="field">
+                    <span>所属行业</span>
+                    <select id="industry">
+                      <option value="智能制造">智能制造</option>
+                      <option value="医疗健康">医疗健康</option>
+                      <option value="教育培训">教育培训</option>
+                      <option value="消费品牌">消费品牌</option>
+                      <option value="B2B服务">B2B 服务</option>
+                      <option value="新能源">新能源</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span>续费窗口</span>
+                    <select id="renewalWindow">
+                      <option value="30">30 天内</option>
+                      <option value="60">60 天内</option>
+                      <option value="90">90 天内</option>
+                    </select>
+                  </label>
+                  <label class="field span-2">
+                    <span>已有服务范围</span>
+                    <select id="serviceLevel">
+                      <option value="基础建站与维护">基础建站与维护</option>
+                      <option value="官网维护 + 内容更新">官网维护 + 内容更新</option>
+                      <option value="官网 + SEO + 数据看板">官网 + SEO + 数据看板</option>
+                      <option value="全链路数字化托管">全链路数字化托管</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="form-actions">
+                  <button class="btn primary" id="generateBtn" type="submit">生成续费分析报告</button>
+                  <p class="form-note" id="formNote">演示版在浏览器本地运行，不会真实访问客户网站。</p>
+                </div>
+              </form>
+            </section>
+
+            <section class="panel-section flow-panel">
+              <div class="section-heading">
+                <span class="required">*</span>
+                <div>
+                  <h2>Agent 工作流</h2>
+                  <p>真实产品接入数据源后的执行顺序。</p>
+                </div>
+              </div>
+              <ol class="agent-flow" id="agentFlow">
+                <li data-stage="profile"><span></span><strong>客户与行业画像</strong><small>识别业务关键词、受众和服务阶段</small></li>
+                <li data-stage="traffic"><span></span><strong>网站使用与访问</strong><small>汇总近一年访问、页面和转化趋势</small></li>
+                <li data-stage="seo"><span></span><strong>收录与搜索表现</strong><small>评估百度、Google、GEO 可见度</small></li>
+                <li data-stage="security"><span></span><strong>安全与健康检查</strong><small>检查 HTTPS、可用性、风险与性能</small></li>
+                <li data-stage="market"><span></span><strong>全网营销动作</strong><small>识别公众号、新闻、专题、活动、ESG</small></li>
+                <li data-stage="advice"><span></span><strong>续费与增购建议</strong><small>输出沟通话术、服务包和优先级</small></li>
+              </ol>
+            </section>
+
+            <section class="report-panel" aria-label="续费分析报告">
+              <div class="report-placeholder" id="emptyState">
+                <div class="placeholder-mark">RA</div>
+                <h2>等待生成客户续费报告</h2>
+                <p>填入客户全称和网址后，系统会生成一份可演示的可视化报告，帮助销售、客服和项目经理在续费前统一判断客户价值与增购机会。</p>
+              </div>
+
+              <article class="report-view hidden" id="reportView">
+                <section class="report-hero">
+                  <div>
+                    <p class="eyebrow" id="reportDate">近一年客户经营分析</p>
+                    <h2 id="reportTitle">客户名称</h2>
+                    <p id="reportSummary">报告摘要</p>
+                  </div>
+                  <div class="renewal-score">
+                    <small>续费把握度</small>
+                    <strong id="renewalScore">--</strong>
+                    <span id="renewalLevel">待分析</span>
+                  </div>
+                </section>
+
+                <section class="kpi-grid" id="kpiGrid"></section>
+
+                <section class="report-grid two-columns">
+                  <div class="report-card">
+                    <div class="card-title-row">
+                      <h3>近一年网站使用趋势</h3>
+                      <span id="trafficBadge" class="badge">访问质量</span>
+                    </div>
+                    <div class="trend-chart" id="trendChart" aria-label="近一年访问趋势图"></div>
+                    <div class="insight-list" id="trafficInsights"></div>
+                  </div>
+
+                  <div class="report-card">
+                    <div class="card-title-row">
+                      <h3>搜索收录与可见度</h3>
+                      <span id="seoBadge" class="badge">SEO / GEO</span>
+                    </div>
+                    <div class="channel-bars" id="channelBars"></div>
+                    <div class="insight-list" id="seoInsights"></div>
+                  </div>
+                </section>
+
+                <section class="report-grid four-columns">
+                  <div class="report-card compact clickable-card" data-detail="security" role="button" tabindex="0">
+                    <div class="card-title-row">
+                      <h3>网站安全与健康</h3>
+                      <span class="badge neutral">可点击</span>
+                    </div>
+                    <div class="health-ring" id="healthRing"><span>--</span></div>
+                    <ul class="check-list" id="securityList"></ul>
+                  </div>
+                  <div class="report-card compact">
+                    <h3>全网营销动作</h3>
+                    <div class="activity-stack" id="activityStack"></div>
+                  </div>
+                  <div class="report-card compact">
+                    <h3>内容与品牌资产</h3>
+                    <div class="asset-matrix" id="assetMatrix"></div>
+                  </div>
+                  <div class="report-card compact">
+                    <div class="card-title-row">
+                      <h3>客户主体与合规影响</h3>
+                      <span class="badge warning">政策合规</span>
+                    </div>
+                    <div class="compliance-matrix" id="complianceMatrix"></div>
+                  </div>
+                </section>
+
+                <section class="report-card">
+                  <div class="card-title-row">
+                    <h3>续费沟通建议与增购机会</h3>
+                    <span class="badge warning">销售跟进视角</span>
+                  </div>
+                  <div class="advice-grid" id="adviceGrid"></div>
+                </section>
+
+                <section class="report-card">
+                  <div class="card-title-row">
+                    <h3>数据接入与真实系统落地</h3>
+                    <span class="badge neutral">可产品化</span>
+                  </div>
+                  <div class="integration-list" id="integrationList"></div>
+                </section>
+              </article>
+            </section>
+        </section>
+      </section>
+    </main>
+
+    <aside class="detail-drawer hidden" id="detailDrawer" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <div class="drawer-backdrop" data-close-detail></div>
+      <section class="drawer-panel">
+        <div class="drawer-header">
+          <div>
+            <p class="eyebrow" id="detailKicker">Analysis source</p>
+            <h2 id="detailTitle">分析详情</h2>
+          </div>
+          <button class="drawer-close" type="button" data-close-detail>关闭</button>
+        </div>
+        <div class="drawer-body" id="detailBody"></div>
+      </section>
+    </aside>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>

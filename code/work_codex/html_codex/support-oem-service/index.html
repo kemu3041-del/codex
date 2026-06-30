@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support OEM Service</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <main class="page-shell">
+    <section class="oem-section" aria-labelledby="oem-flow-title">
+      <div class="flow-board" data-flow>
+        <div class="flow-canvas">
+          <svg class="flow-map" viewBox="0 0 1550 760" role="img" aria-labelledby="flow-map-title flow-map-desc">
+            <title id="flow-map-title">OEM Process Flow</title>
+            <desc id="flow-map-desc">A six step OEM service process from inquiry to after-sales support.</desc>
+            <defs>
+              <filter id="soft-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="24" stdDeviation="34" flood-color="#1b5d9d" flood-opacity=".18" />
+              </filter>
+              <linearGradient id="route-01" x1="255" y1="390" x2="620" y2="190" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#4f83c3" />
+                <stop offset=".48" stop-color="#46b8e2" />
+                <stop offset="1" stop-color="#03b9e8" />
+              </linearGradient>
+              <linearGradient id="route-02" x1="610" y1="205" x2="980" y2="205" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#0fb1e0" />
+                <stop offset=".6" stop-color="#5577c6" />
+                <stop offset="1" stop-color="#4669b8" />
+              </linearGradient>
+              <linearGradient id="route-03" x1="1000" y1="205" x2="1270" y2="410" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#5277c7" />
+                <stop offset=".56" stop-color="#7a63c7" />
+                <stop offset="1" stop-color="#4857bc" />
+              </linearGradient>
+              <linearGradient id="route-04" x1="1265" y1="410" x2="850" y2="560" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#5d5cc0" />
+                <stop offset=".56" stop-color="#8837b5" />
+                <stop offset="1" stop-color="#7730a7" />
+              </linearGradient>
+              <linearGradient id="route-05" x1="875" y1="560" x2="470" y2="560" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#8d39b6" />
+                <stop offset=".52" stop-color="#3150d3" />
+                <stop offset="1" stop-color="#3e7bc3" />
+              </linearGradient>
+              <linearGradient id="route-06" x1="470" y1="560" x2="260" y2="370" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#3d80c6" />
+                <stop offset=".58" stop-color="#5f95cd" />
+                <stop offset="1" stop-color="#2d61ad" />
+              </linearGradient>
+            </defs>
+
+            <g class="ghost-lines" aria-hidden="true">
+              <path
+                d="M 360 150 H 1038 C 1258 150 1370 252 1370 382 C 1370 512 1258 658 1040 658 H 382 C 218 658 120 540 120 382 C 120 222 220 150 360 150 Z" />
+              <path
+                d="M 376 292 H 1032 C 1152 292 1210 326 1210 382 C 1210 438 1152 470 1032 470 H 376 C 260 470 202 438 202 382 C 202 326 260 292 376 292 Z" />
+              <path
+                d="M 374 334 H 1014 C 1094 334 1140 352 1140 382 C 1140 412 1094 430 1014 430 H 374 C 294 430 248 412 248 382 C 248 352 294 334 374 334 Z" />
+            </g>
+
+            <g class="route-shadow" filter="url(#soft-shadow)" aria-hidden="true">
+              <path d="M 278 382 C 278 268 372 208 485 208 H 612" />
+              <path d="M 612 208 H 964" />
+              <path d="M 964 208 H 1086 C 1200 208 1265 282 1265 382" />
+              <path d="M 1265 382 C 1265 494 1176 558 1058 558 H 860" />
+              <path d="M 860 558 H 472" />
+              <path d="M 472 558 C 356 558 278 492 278 382" />
+            </g>
+
+            <g class="route-main" aria-hidden="true">
+              <path class="flow-segment segment-01" pathLength="1" d="M 278 382 C 278 268 372 208 485 208 H 612" />
+              <path class="flow-segment segment-02" pathLength="1" d="M 612 208 H 964" />
+              <path class="flow-segment segment-03" pathLength="1" d="M 964 208 H 1086 C 1200 208 1265 282 1265 382" />
+              <path class="flow-segment segment-04" pathLength="1" d="M 1265 382 C 1265 494 1176 558 1058 558 H 860" />
+              <path class="flow-segment segment-05" pathLength="1" d="M 860 558 H 472" />
+              <path class="flow-segment segment-06" pathLength="1" d="M 472 558 C 356 558 278 492 278 382" />
+            </g>
+          </svg>
+
+          <h1 class="flow-title" id="oem-flow-title">OEM Process Flow</h1>
+
+          <div class="flow-step step-01" data-step="01">
+            <span class="step-arrows arrows-right" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge" type="button" aria-label="Step 01 Inquiry">01</button>
+            <span class="step-connector connector-up" aria-hidden="true"></span>
+            <span class="step-label label-top">Inquiry</span>
+          </div>
+
+          <div class="flow-step step-02" data-step="02">
+            <span class="step-arrows arrows-right" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge" type="button" aria-label="Step 02 Sample Development">02</button>
+            <span class="step-connector connector-up" aria-hidden="true"></span>
+            <span class="step-label label-top">Sample Development</span>
+          </div>
+
+          <div class="flow-step step-03" data-step="03">
+            <span class="step-arrows arrows-down" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge" type="button" aria-label="Step 03 Order Confirmation">03</button>
+            <span class="step-connector connector-right" aria-hidden="true"></span>
+            <span class="step-label label-right">Order<br>Confirmation</span>
+          </div>
+
+          <div class="flow-step step-04" data-step="04">
+            <span class="step-arrows arrows-left" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge step-badge-large" type="button" aria-expanded="false"
+              aria-controls="mass-production-card">04</button>
+            <span class="step-connector connector-down" aria-hidden="true"></span>
+            <span class="step-label label-bottom">Mass Production</span>
+            <article class="detail-card" id="mass-production-card" aria-label="Mass Production detail">
+              <h2>Mass Production</h2>
+              <svg class="detail-icon" viewBox="0 0 88 70" aria-hidden="true">
+                <path d="M15 45h50c5.5 0 10 4.5 10 10H8c0-5.5 3.5-10 7-10Z" />
+                <path d="M18 45V28h14v17M36 45V20h18v25M58 45V12h14v33" />
+                <path d="M30 20h30M61 12h14M65 12v-7h8v7" />
+                <path d="M17 59h55" />
+                <circle cx="20" cy="60" r="5" />
+                <circle cx="35" cy="60" r="5" />
+                <circle cx="50" cy="60" r="5" />
+                <circle cx="65" cy="60" r="5" />
+                <path d="M25 35h8M42 28h8M63 24h6" />
+              </svg>
+            </article>
+          </div>
+
+          <div class="flow-step step-05" data-step="05">
+            <span class="step-arrows arrows-left" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge" type="button" aria-label="Step 05 Delivery">05</button>
+            <span class="step-connector connector-down" aria-hidden="true"></span>
+            <span class="step-label label-bottom">Delivery</span>
+          </div>
+
+          <div class="flow-step step-06" data-step="06">
+            <span class="step-arrows arrows-up" aria-hidden="true"><i></i><i></i><i></i></span>
+            <button class="step-badge" type="button" aria-label="Step 06 After-Sales Support">06</button>
+            <span class="step-connector connector-left" aria-hidden="true"></span>
+            <span class="step-label label-left">After-Sales<br>Support</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../../../js/gsap.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>

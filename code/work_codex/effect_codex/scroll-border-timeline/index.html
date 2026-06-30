@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="使用 GSAP ScrollTrigger 实现的折线边框滚动高亮时间轴 Demo"
+    />
+    <title>滚动边框高亮时间轴</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main>
+      <section class="history-hero" aria-labelledby="page-title">
+        <div class="history-hero__inner">
+          <p class="eyebrow">Our history · 2021—2025</p>
+          <h1 id="page-title">每一次进步<br />都留下清晰轨迹</h1>
+          <p class="history-hero__intro">
+            向下滚动，年份之间的折线边框会沿着阅读方向依次点亮，形成一条连续的成长路径。
+          </p>
+          <div class="scroll-hint" aria-hidden="true">
+            <span>Scroll to explore</span>
+            <i></i>
+          </div>
+        </div>
+      </section>
+
+      <section class="history" aria-label="发展历程">
+        <article class="history-entry history-entry--left" data-entry>
+          <span class="history-entry__ghost" aria-hidden="true">01</span>
+          <div class="history-entry__content">
+            <p class="history-entry__label">New chapter</p>
+            <h2>2025</h2>
+            <ul>
+              <li>智能化内容服务平台正式上线</li>
+              <li>完成全球多语言协作网络升级</li>
+            </ul>
+          </div>
+          <div class="route route--right" aria-hidden="true">
+            <span class="route__line route__line--horizontal"><i></i></span>
+            <span class="route__corner">＋</span>
+            <span class="route__line route__line--vertical"><i></i></span>
+          </div>
+        </article>
+
+        <article class="history-entry history-entry--right" data-entry>
+          <span class="history-entry__ghost" aria-hidden="true">02</span>
+          <div class="history-entry__content">
+            <p class="history-entry__label">Scale up</p>
+            <h2>2024</h2>
+            <ul>
+              <li>获得四项国际服务体系认证</li>
+              <li>年度合作项目突破 300 个</li>
+              <li>建立跨区域交付与质量中心</li>
+            </ul>
+          </div>
+          <div class="route route--left" aria-hidden="true">
+            <span class="route__line route__line--horizontal"><i></i></span>
+            <span class="route__corner">＋</span>
+            <span class="route__line route__line--vertical"><i></i></span>
+          </div>
+        </article>
+
+        <article class="history-entry history-entry--left" data-entry>
+          <span class="history-entry__ghost" aria-hidden="true">03</span>
+          <div class="history-entry__content">
+            <p class="history-entry__label">Connected</p>
+            <h2>2023</h2>
+            <ul>
+              <li>上线客户全流程数字化工作台</li>
+              <li>与头部内容平台建立长期合作</li>
+            </ul>
+          </div>
+          <div class="route route--right" aria-hidden="true">
+            <span class="route__line route__line--horizontal"><i></i></span>
+            <span class="route__corner">＋</span>
+            <span class="route__line route__line--vertical"><i></i></span>
+          </div>
+        </article>
+
+        <article class="history-entry history-entry--right" data-entry>
+          <span class="history-entry__ghost" aria-hidden="true">04</span>
+          <div class="history-entry__content">
+            <p class="history-entry__label">Foundation</p>
+            <h2>2022</h2>
+            <ul>
+              <li>产品、设计与技术团队完成整合</li>
+              <li>建立标准化服务和数据管理体系</li>
+            </ul>
+          </div>
+          <div class="route route--left" aria-hidden="true">
+            <span class="route__line route__line--horizontal"><i></i></span>
+            <span class="route__corner">＋</span>
+            <span class="route__line route__line--vertical"><i></i></span>
+          </div>
+        </article>
+
+        <article class="history-entry history-entry--left history-entry--last" data-entry>
+          <span class="history-entry__ghost" aria-hidden="true">05</span>
+          <div class="history-entry__content">
+            <p class="history-entry__label">The beginning</p>
+            <h2>2021</h2>
+            <ul>
+              <li>公司成立，开启数字内容服务业务</li>
+              <li>完成首批核心客户项目交付</li>
+            </ul>
+          </div>
+          <div class="route route--right" aria-hidden="true">
+            <span class="route__line route__line--horizontal"><i></i></span>
+            <span class="route__corner">＋</span>
+            <span class="route__line route__line--vertical"><i></i></span>
+          </div>
+        </article>
+      </section>
+
+      <footer class="history-footer">
+        <p>THE NEXT CHAPTER IS BEING WRITTEN.</p>
+      </footer>
+    </main>
+
+    <script src="../../../js/gsap.min.js"></script>
+    <script src="../../../js/ScrollTrigger.min.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>

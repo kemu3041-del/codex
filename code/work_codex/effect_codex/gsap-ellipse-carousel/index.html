@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GSAP Ellipse Arc Carousel</title>
+  <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+
+<body>
+  <main class="demo-page">
+    <section class="ellipse-carousel" data-ellipse-carousel aria-label="GSAP 上半椭圆卡片轮播">
+      <div class="ellipse-carousel__mask">
+        <div class="ellipse-carousel__guide" aria-hidden="true"></div>
+        <div class="ellipse-carousel__stage" data-ellipse-stage></div>
+      </div>
+
+      <div class="ellipse-carousel__source" data-ellipse-source>
+        <article class="arc-card visual-pixel" data-ellipse-card data-title="Pixelate Image Render Effect">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Pixelate Image Render Effect</h2>
+            <span>01</span>
+          </div>
+        </article>
+        <article class="arc-card visual-list" data-ellipse-card data-title="Directional List Hover">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Directional List Hover</h2>
+            <span>02</span>
+          </div>
+        </article>
+        <article class="arc-card visual-stack" data-ellipse-card data-title="Flick Cards Slider">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Flick Cards Slider</h2>
+            <span>03</span>
+          </div>
+        </article>
+        <article class="arc-card visual-mascot" data-ellipse-card data-title="Face Follow Cursor (Mascot)">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Face Follow Cursor (Mascot)</h2>
+            <span>04</span>
+          </div>
+        </article>
+        <article class="arc-card visual-scroll" data-ellipse-card data-title="Locomotive Smooth Scroll Setup">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Locomotive Smooth Scroll Setup</h2>
+            <span>05</span>
+          </div>
+        </article>
+        <article class="arc-card visual-logo" data-ellipse-card data-title="Logo Wall Cycle">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Logo Wall Cycle</h2>
+            <span>06</span>
+          </div>
+        </article>
+        <article class="arc-card visual-matter" data-ellipse-card data-title="Falling 2D Objects">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Falling 2D Objects</h2>
+            <span>07</span>
+          </div>
+        </article>
+        <article class="arc-card visual-carousel" data-ellipse-card data-title="3D Image Carousel">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>3D Image Carousel</h2>
+            <span>08</span>
+          </div>
+        </article>
+        <article class="arc-card visual-momentum" data-ellipse-card data-title="Momentum Based Hover">
+          <div class="arc-card__visual" aria-hidden="true"></div>
+          <div class="arc-card__meta">
+            <h2>Momentum Based Hover</h2>
+            <span>09</span>
+          </div>
+        </article>
+      </div>
+
+      <div class="ellipse-carousel__controls">
+        <button class="arc-button" type="button" data-ellipse-prev aria-label="上一张">
+          <span aria-hidden="true">‹</span>
+        </button>
+        <div class="ellipse-carousel__readout">
+          <span data-ellipse-index>03</span>
+          <strong data-ellipse-title>Flick Cards Slider</strong>
+        </div>
+        <button class="arc-button" type="button" data-ellipse-next aria-label="下一张">
+          <span aria-hidden="true">›</span>
+        </button>
+      </div>
+
+      <aside class="ellipse-carousel__notes" aria-label="插件配置提示">
+        <span>breakpoints: { 0, 768, 1200 }</span>
+        <span>visibleSideCount controls card count</span>
+        <span>drag.enabled = true</span>
+      </aside>
+    </section>
+  </main>
+
+  <script src="../../../js/gsap.min.js"></script>
+  <script src="./js/ellipse-arc-carousel.js"></script>
+  <script src="./js/demo.js"></script>
+</body>
+
+</html>

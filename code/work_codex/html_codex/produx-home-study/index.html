@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Readable one-page PRODUX-inspired homepage study built with plain HTML, CSS and JavaScript."
+    />
+    <title>PRODUX homepage study</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="progress-line" aria-hidden="true"></div>
+    <div class="cursor-label" aria-hidden="true">View project</div>
+
+    <header class="site-header" data-header>
+      <a class="wordmark" href="#top" aria-label="PRODUX home">PRODUX</a>
+      <nav class="main-nav" aria-label="Primary navigation">
+        <a href="#work">Work</a>
+        <a href="#method">Method</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero section-pad">
+        <div class="hero-copy">
+          <p class="eyebrow reveal">Branding company</p>
+          <h1 class="hero-title reveal">
+            <span>You feel the</span>
+            <span>brand</span>
+            <span>before it</span>
+            <span>speaks</span>
+          </h1>
+          <p class="hero-intro reveal">
+            A study version of the PRODUX homepage: dark editorial spacing,
+            massive typography, crisp project imagery, and restrained motion.
+          </p>
+        </div>
+
+        <figure class="hero-media reveal image-parallax" data-parallax="0.12">
+          <img src="img/hero/hero.webp" alt="Moss-covered PRODUX brand visual" />
+          <figcaption>
+            <span>Strategy-led</span>
+            <span>Brand systems</span>
+            <span>Web direction</span>
+          </figcaption>
+        </figure>
+
+        <div class="scroll-hint" aria-hidden="true">
+          <span>[</span> scroll <span>]</span>
+        </div>
+      </section>
+
+      <section class="section-pad intro-strip">
+        <p class="section-kicker reveal">Effect analysis</p>
+        <div class="analysis-grid">
+          <article class="analysis-item reveal">
+            <span>01</span>
+            <h2>Large identity first</h2>
+            <p>
+              The brand mark is not a small logo. It behaves like a spatial
+              object, setting the page scale before the content appears.
+            </p>
+          </article>
+          <article class="analysis-item reveal">
+            <span>02</span>
+            <h2>Image as proof</h2>
+            <p>
+              Project images carry the credibility. Text stays short, uppercase
+              and functional so visual work remains the main signal.
+            </p>
+          </article>
+          <article class="analysis-item reveal">
+            <span>03</span>
+            <h2>Motion stays structural</h2>
+            <p>
+              Reveals, hover scale, cursor labels and parallax are used to show
+              hierarchy instead of decorating every surface.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-pad work-section" id="work">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker reveal">Selected projects</p>
+            <h2 class="section-title reveal">Work that creates memory</h2>
+          </div>
+          <a class="text-link reveal" href="#contact">Start a project</a>
+        </div>
+
+        <div class="project-grid">
+          <article class="project-card reveal" data-cursor="Aqua Investment">
+            <a href="#" aria-label="View Aqua Investment project">
+              <figure class="image-parallax" data-parallax="0.08">
+                <img src="img/projects/aqua-investment.webp" alt="Aqua Investment project" />
+              </figure>
+              <div class="project-meta">
+                <div class="tag-row">
+                  <span>Brand identity</span>
+                  <span>Web design</span>
+                  <span>Fintech</span>
+                </div>
+                <h3>Aqua Investment</h3>
+                <p>The modern alternative investing experience.</p>
+              </div>
+            </a>
+          </article>
+
+          <article class="project-card reveal project-card--offset" data-cursor="Gather AI">
+            <a href="#" aria-label="View Gather AI project">
+              <figure class="image-parallax" data-parallax="0.08">
+                <img src="img/projects/gather-ai.webp" alt="Gather AI project" />
+              </figure>
+              <div class="project-meta">
+                <div class="tag-row">
+                  <span>AI product</span>
+                  <span>Creative direction</span>
+                  <span>Website</span>
+                </div>
+                <h3>Gather AI</h3>
+                <p>AI-powered telco identity for a multi-brand platform.</p>
+              </div>
+            </a>
+          </article>
+
+          <article class="project-card reveal" data-cursor="Jurni AI">
+            <a href="#" aria-label="View Jurni AI project">
+              <figure class="image-parallax" data-parallax="0.08">
+                <img src="img/projects/jurni-ai.webp" alt="Jurni AI project" />
+              </figure>
+              <div class="project-meta">
+                <div class="tag-row">
+                  <span>Landing system</span>
+                  <span>Motion</span>
+                  <span>AI</span>
+                </div>
+                <h3>Jurni AI</h3>
+                <p>A funnel builder that turns prompts into live campaigns.</p>
+              </div>
+            </a>
+          </article>
+
+          <article class="project-card reveal project-card--offset" data-cursor="Parker AI">
+            <a href="#" aria-label="View Parker AI project">
+              <figure class="image-parallax" data-parallax="0.08">
+                <img src="img/projects/parker-ai.webp" alt="Parker AI project" />
+              </figure>
+              <div class="project-meta">
+                <div class="tag-row">
+                  <span>Strategy</span>
+                  <span>Identity</span>
+                  <span>Interface</span>
+                </div>
+                <h3>Parker AI</h3>
+                <p>An AI strategist with the feel of a senior creative partner.</p>
+              </div>
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section-pad logo-section">
+        <p class="section-kicker reveal">Trusted by teams building faster</p>
+        <div class="logo-wall reveal">
+          <div><img src="img/logos/google.webp" alt="Google" /></div>
+          <div><img src="img/logos/aqua.webp" alt="Aqua" /></div>
+          <div><img src="img/logos/gather.webp" alt="Gather" /></div>
+          <div><img src="img/logos/parker.webp" alt="Parker" /></div>
+          <div><img src="img/logos/geviti.webp" alt="Geviti" /></div>
+          <div><img src="img/logos/healwell.webp" alt="Healwell" /></div>
+        </div>
+      </section>
+
+      <section class="method section-pad" id="method">
+        <div class="method-sticky">
+          <p class="section-kicker reveal">Method</p>
+          <h2 class="section-title reveal">The system behind the look</h2>
+        </div>
+
+        <div class="method-list">
+          <article class="method-card reveal">
+            <span>01</span>
+            <h3>Strategy before aesthetics</h3>
+            <p>
+              Define positioning, audience and contrast first. The final visual
+              language should feel inevitable, not merely decorative.
+            </p>
+          </article>
+          <article class="method-card reveal">
+            <span>02</span>
+            <h3>Identity as a system</h3>
+            <p>
+              A logo is only one part. The reusable system includes type,
+              imagery, UI rhythm, motion and campaign surfaces.
+            </p>
+          </article>
+          <article class="method-card reveal">
+            <span>03</span>
+            <h3>Built to be felt</h3>
+            <p>
+              The site uses scale, contrast and controlled motion so the brand
+              lands emotionally before the visitor reads every line.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="statement">
+        <p class="reveal">
+          Make the page feel like a brand system, not a collection of blocks.
+        </p>
+      </section>
+
+      <section class="reviews section-pad" id="reviews">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker reveal">Client notes</p>
+            <h2 class="section-title reveal">Short, direct, credible</h2>
+          </div>
+        </div>
+
+        <div class="review-grid">
+          <article class="review-card reveal">
+            <img src="img/clients/jimmy-slage.webp" alt="Jimmy Slage" />
+            <h3>Jimmy Slage</h3>
+            <p>
+              The work feels deliberate. Each visual decision supports the
+              story instead of competing with it.
+            </p>
+          </article>
+          <article class="review-card reveal">
+            <img src="img/clients/ty-zamkow.webp" alt="Ty Zamkow" />
+            <h3>Ty Zamkow</h3>
+            <p>
+              Clear thinking, fast iteration and a result with a strong point
+              of view.
+            </p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer section-pad" id="contact">
+      <div>
+        <a class="footer-logo" href="#top">PRODUX</a>
+        <p>Readable homepage study. Built as static HTML/CSS/JS.</p>
+      </div>
+      <div>
+        <p class="footer-label">CMS fields</p>
+        <p>Hero title, hero image, project cards, tags, logos, testimonials.</p>
+      </div>
+      <div>
+        <p class="footer-label">Reuse</p>
+        <p>Turn each section into a CMS block or a reusable front-end module.</p>
+      </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+  </body>
+</html>

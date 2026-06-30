@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>土豆短片 WebM 渲染器</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        background: #f2e6c9;
+        color: #3b281d;
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .wrap {
+        display: grid;
+        gap: 14px;
+        justify-items: center;
+      }
+
+      canvas {
+        width: min(360px, 86vw);
+        aspect-ratio: 9 / 16;
+        border: 8px solid #3b281d;
+        border-radius: 24px;
+        background: #9fdcf6;
+        box-shadow: 0 18px 36px rgba(59, 40, 29, 0.24);
+      }
+
+      button {
+        border: 3px solid #3b281d;
+        border-radius: 999px;
+        background: #ffd75f;
+        color: #3b281d;
+        padding: 10px 18px;
+        font: inherit;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .status {
+        max-width: 360px;
+        min-height: 24px;
+        font-size: 14px;
+        font-weight: 700;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <canvas id="videoCanvas" width="1080" height="1920"></canvas>
+      <button id="recordButton" type="button">生成 WebM 视频</button>
+      <div class="status" id="status">准备渲染 15 秒竖屏土豆短片</div>
+    </div>
+
+    <script>
+      (function () {
+        var canvas = document.getElementById("videoCanvas");
+        var ctx = canvas.getContext("2d");
+        var button = document.getElementById("recordButton");
+        var statusEl = document.getElementById("status");
+        var W = 1080;
+        var H = 1920;
+        var DURATION = 15;
+        var FPS = 30;
+
+        function clamp(v, min, max) {
+          return Math.max(min, Math.min(max, v));
+        }
+
+        function lerp(a, b, t) {
+          return a + (b - a) * t;
+        }
+
+        function smooth(t) {
+          t = clamp(t, 0, 1);
+          return t * t * (3 - 2 * t);
+        }
+
+        function bounce(t) {
+          t = clamp(t, 0, 1);
+          return Math.abs(Math.sin(t * Math.PI * 4)) * (1 - t);
+        }
+
+        function sceneProgress(time, start, end) {
+          return clamp((time - start) / (end - start), 0, 1);
+        }
+
+        function roundedRect(x, y, w, h, r, fill, stroke, lineWidth) {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+          ctx.closePath();
+          if (fill) {
+            ctx.fillStyle = fill;
+            ctx.fill();
+          }
+          if (stroke) {
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = lineWidth || 10;
+            ctx.stroke();
+          }
+        }
+
+        function potato(x, y, scale, rotation, face) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(rotation || 0);
+          ctx.scale(scale, scale);
+          ctx.fillStyle = "#d99b53";
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 12;
+          ctx.beginPath();
+          ctx.ellipse(0, 0, 95, 112, -0.12, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "#efbd72";
+          ctx.beginPath();
+          ctx.arc(-32, -38, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "#9f6133";
+          ctx.beginPath();
+          ctx.arc(38, 42, 8, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(-48, 34, 6, 0, Math.PI * 2);
+          ctx.fill();
+          if (face) {
+            ctx.fillStyle = "#3b281d";
+            ctx.beginPath();
+            ctx.arc(-34, -20, 13, 0, Math.PI * 2);
+            ctx.arc(34, -20, 13, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#fff4ce";
+            ctx.beginPath();
+            ctx.arc(-38, -25, 4, 0, Math.PI * 2);
+            ctx.arc(30, -25, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = "#3b281d";
+            ctx.lineWidth = 9;
+            ctx.beginPath();
+            ctx.arc(0, 22, 26, 0.12 * Math.PI, 0.88 * Math.PI);
+            ctx.stroke();
+            ctx.fillStyle = "#f38f76";
+            ctx.beginPath();
+            ctx.ellipse(-58, 20, 15, 9, 0, 0, Math.PI * 2);
+            ctx.ellipse(58, 20, 15, 9, 0, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        function drawCloud(x, y, s) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.scale(s, s);
+          ctx.fillStyle = "rgba(255,247,221,0.85)";
+          roundedRect(-100, -24, 200, 52, 30, ctx.fillStyle, null, 0);
+          ctx.beginPath();
+          ctx.arc(-46, -22, 38, 0, Math.PI * 2);
+          ctx.arc(34, -28, 50, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function drawBackground(time, forest) {
+          ctx.fillStyle = "#9fdcf6";
+          ctx.fillRect(0, 0, W, H);
+          ctx.fillStyle = "#ffd75f";
+          ctx.beginPath();
+          ctx.arc(850, 170, 90, 0, Math.PI * 2);
+          ctx.fill();
+          drawCloud(220 + time * 8, 230, 1.2);
+          drawCloud(890 - time * 10, 350, 0.88);
+
+          if (forest) {
+            ctx.fillStyle = "#6fbd57";
+            ctx.fillRect(0, 620, W, 1300);
+            for (var i = 0; i < 6; i += 1) {
+              drawTree(-40 + i * 220, 760 + (i % 2) * 60, 1.1 - (i % 3) * 0.08);
+            }
+            ctx.fillStyle = "#8a5a33";
+            ctx.strokeStyle = "#3b281d";
+            ctx.lineWidth = 14;
+            ctx.beginPath();
+            ctx.moveTo(360, 1920);
+            ctx.quadraticCurveTo(520, 1200, 670, 910);
+            ctx.quadraticCurveTo(725, 1180, 780, 1920);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = "#74c85e";
+            ctx.beginPath();
+            ctx.ellipse(300, 1050, 520, 250, 0, Math.PI, 0);
+            ctx.fill();
+            ctx.fillStyle = "#5fb94f";
+            ctx.beginPath();
+            ctx.ellipse(820, 1030, 520, 250, 0, Math.PI, 0);
+            ctx.fill();
+            ctx.fillStyle = "#8a5a33";
+            ctx.strokeStyle = "#6f4327";
+            ctx.lineWidth = 16;
+            ctx.beginPath();
+            ctx.ellipse(540, 1610, 760, 460, 0, Math.PI, 0);
+            ctx.lineTo(1300, 1920);
+            ctx.lineTo(-220, 1920);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            drawMudDots();
+          }
+        }
+
+        function drawMudDots() {
+          ctx.fillStyle = "#6f4327";
+          var dots = [[170, 1410, 26], [380, 1510, 18], [710, 1425, 28], [925, 1540, 20], [520, 1330, 16]];
+          dots.forEach(function (d) {
+            ctx.beginPath();
+            ctx.ellipse(d[0], d[1], d[2] * 1.7, d[2], 0.2, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+
+        function drawTree(x, y, s) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.scale(s, s);
+          ctx.fillStyle = "#8a5a33";
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 12;
+          roundedRect(78, 250, 58, 410, 28, "#8a5a33", "#3b281d", 12);
+          ctx.fillStyle = "#2f7d43";
+          ctx.beginPath();
+          ctx.ellipse(100, 210, 125, 140, -0.25, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function drawCartGroup(x, y, bounceOffset, rotation) {
+          ctx.save();
+          ctx.translate(x, y + bounceOffset);
+          ctx.rotate(rotation || 0);
+          drawPerson(-210, -75, bounceOffset);
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 12;
+          ctx.beginPath();
+          ctx.moveTo(-80, 65);
+          ctx.lineTo(180, 15);
+          ctx.stroke();
+          drawCart(210, 0, bounceOffset);
+          ctx.restore();
+        }
+
+        function drawPerson(x, y, b) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.fillStyle = "#f2b16f";
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 10;
+          ctx.beginPath();
+          ctx.arc(0, -145, 48, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          roundedRect(-58, -190, 112, 38, 18, "#e34f3f", "#3b281d", 10);
+          roundedRect(-55, -86, 108, 128, 28, "#4c8fd8", "#3b281d", 10);
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 18;
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(-48, -55);
+          ctx.lineTo(-95, 40 + b * 0.5);
+          ctx.moveTo(48, -55);
+          ctx.lineTo(95, 10);
+          ctx.moveTo(-28, 42);
+          ctx.lineTo(-56, 148);
+          ctx.moveTo(28, 42);
+          ctx.lineTo(54, 148);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function drawCart(x, y, b) {
+          ctx.save();
+          ctx.translate(x, y);
+          var potatoes = [[35, -105, 0.62, -0.2], [135, -132, 0.62, 0.1], [235, -105, 0.62, -0.1], [325, -132, 0.62, 0.18], [185, -185, 0.56, 0.04]];
+          potatoes.forEach(function (p) { potato(p[0], p[1], p[2], p[3], false); });
+          roundedRect(0, -95, 410, 190, 36, "#be733a", "#3b281d", 12);
+          ctx.strokeStyle = "rgba(59,40,29,0.55)";
+          ctx.lineWidth = 10;
+          ctx.beginPath();
+          ctx.moveTo(45, 0);
+          ctx.lineTo(365, 0);
+          ctx.stroke();
+          drawWheel(90, 140, b);
+          drawWheel(315, 140, b);
+          ctx.restore();
+        }
+
+        function drawWheel(x, y, b) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate((b || 0) * 0.12);
+          ctx.fillStyle = "#53321e";
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 12;
+          ctx.beginPath();
+          ctx.arc(0, 0, 50, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.stroke();
+          ctx.fillStyle = "#f0c05c";
+          ctx.beginPath();
+          ctx.arc(0, 0, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function caption(text) {
+          roundedRect(80, 1670, 920, 135, 32, "#fff4ce", "#3b281d", 10);
+          ctx.fillStyle = "#3b281d";
+          ctx.font = "900 58px PingFang SC, Microsoft YaHei, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(text, 540, 1738);
+        }
+
+        function mudWipe(time) {
+          var centers = [[230, 520], [850, 280], [-80, 1260], [1130, 1480], [540, 1180]];
+          ctx.fillStyle = "#8a5a33";
+          ctx.strokeStyle = "#3b281d";
+          ctx.lineWidth = 10;
+          centers.forEach(function (c, index) {
+            var local = clamp((time - index * 0.08) / 0.55, 0, 1);
+            var r = smooth(local) * 880;
+            ctx.beginPath();
+            ctx.arc(c[0], c[1], r, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+          });
+        }
+
+        function drawSpark(x, y, s, alpha) {
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.scale(s, s);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = "#ffd75f";
+          ctx.beginPath();
+          for (var i = 0; i < 8; i += 1) {
+            var r = i % 2 === 0 ? 38 : 12;
+            var a = -Math.PI / 2 + i * Math.PI / 4;
+            ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+
+        function drawScene(time) {
+          var t = time % DURATION;
+          ctx.clearRect(0, 0, W, H);
+
+          if (t < 3.65) {
+            var p1 = sceneProgress(t, 0, 3.65);
+            drawBackground(t, false);
+            var wobble = Math.sin(t * 14) * 12;
+            drawCartGroup(880 - p1 * 560, 1185, wobble, Math.sin(t * 9) * 0.025);
+            caption("一个人拉着满满一车土豆");
+          } else if (t < 7.35) {
+            var p2 = sceneProgress(t, 3.65, 7.35);
+            drawBackground(t, false);
+            roundedRect(590, 1260, 180, 70, 40, "#6f4327", "#3b281d", 10);
+            drawCartGroup(820 - p2 * 620, 1180, Math.sin(t * 18) * 18, Math.sin(t * 16) * 0.045);
+            var fall = sceneProgress(t, 5.2, 6.45);
+            var fx = lerp(650, 720, smooth(fall));
+            var fy = lerp(1070, 1400, fall) - Math.sin(fall * Math.PI) * 170;
+            potato(fx, fy, 0.74, lerp(-1.2, 4.8, fall), false);
+            if (t > 6.25 && t < 6.75) {
+              ctx.strokeStyle = "#fff4ce";
+              ctx.lineWidth = 12;
+              ctx.lineCap = "round";
+              ctx.beginPath();
+              ctx.moveTo(600, 1460);
+              ctx.lineTo(540, 1515);
+              ctx.moveTo(720, 1460);
+              ctx.lineTo(720, 1535);
+              ctx.moveTo(835, 1460);
+              ctx.lineTo(895, 1515);
+              ctx.stroke();
+            }
+            caption("泥路一颠，一个土豆掉了下来");
+          } else if (t < 11.15) {
+            var p3 = sceneProgress(t, 7.35, 11.15);
+            drawBackground(t, false);
+            ctx.fillStyle = "#6fbd57";
+            ctx.strokeStyle = "#2f7d43";
+            ctx.lineWidth = 14;
+            ctx.beginPath();
+            ctx.ellipse(540, 1520, 760, 450, 0, Math.PI, 0);
+            ctx.lineTo(1300, 1920);
+            ctx.lineTo(-220, 1920);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            var wake = smooth(sceneProgress(t, 8.2, 9.1));
+            var hop = Math.sin(p3 * Math.PI * 5) * 18;
+            potato(540, lerp(1440, 1225, wake) - Math.abs(hop), lerp(0.5, 1.55, wake), -0.1, wake > 0.72);
+            if (wake > 0.75) {
+              drawSpark(275, 1020, 1, Math.sin(t * 5) * 0.25 + 0.75);
+              drawSpark(820, 960, 0.8, 0.8);
+              drawSpark(310, 1370, 0.72, 0.7);
+            }
+            caption("它睁开眼睛，开心地笑了");
+          } else {
+            var p4 = sceneProgress(t, 11.15, 15);
+            drawBackground(t, true);
+            var rx = lerp(170, 830, smooth(p4));
+            var ry = lerp(1400, 930, smooth(p4)) - bounce(p4) * 85;
+            potato(rx, ry, lerp(0.85, 0.42, p4), Math.sin(t * 9) * 0.18, true);
+            if (t < 14.65) {
+              caption("然后蹦蹦跳跳跑进树林");
+            }
+            if (t > 14.0) {
+              drawSpark(290, 820, 1.3, 0.7);
+              drawSpark(780, 880, 1.1, 0.8);
+              drawSpark(600, 1220, 0.9, 0.55);
+            }
+          }
+
+          var wipes = [3.55, 7.22, 11.02];
+          wipes.forEach(function (start) {
+            if (t >= start && t <= start + 0.85) {
+              mudWipe(t - start);
+            }
+          });
+        }
+
+        function previewLoop(start) {
+          var now = performance.now();
+          drawScene(((now - start) / 1000) % DURATION);
+          requestAnimationFrame(function () { previewLoop(start); });
+        }
+
+        async function record() {
+          button.disabled = true;
+          statusEl.textContent = "正在录制 WebM，约 15 秒...";
+          var stream = canvas.captureStream(FPS);
+          var chunks = [];
+          var recorder = new MediaRecorder(stream, {
+            mimeType: "video/webm;codecs=vp9",
+            videoBitsPerSecond: 6000000
+          });
+
+          recorder.ondataavailable = function (event) {
+            if (event.data && event.data.size) {
+              chunks.push(event.data);
+            }
+          };
+
+          recorder.onstop = async function () {
+            var blob = new Blob(chunks, { type: "video/webm" });
+            statusEl.textContent = "正在保存到 renders/potato-cart-short.webm...";
+            var response = await fetch("/save-video", {
+              method: "POST",
+              headers: { "Content-Type": "video/webm" },
+              body: blob
+            });
+            if (!response.ok) {
+              statusEl.textContent = "保存失败：" + response.status;
+              button.disabled = false;
+              return;
+            }
+            var result = await response.json();
+            statusEl.textContent = "已生成：" + result.file + "（" + Math.round(blob.size / 1024) + " KB）";
+            document.documentElement.dataset.renderStatus = "done";
+            document.documentElement.dataset.renderFile = result.file;
+            button.disabled = false;
+          };
+
+          var frame = 0;
+          function renderFixedFrame() {
+            drawScene(frame / FPS);
+            frame += 1;
+            if (frame <= DURATION * FPS) {
+              requestAnimationFrame(renderFixedFrame);
+            }
+          }
+
+          recorder.start(250);
+          renderFixedFrame();
+          setTimeout(function () {
+            recorder.stop();
+          }, DURATION * 1000 + 250);
+        }
+
+        button.addEventListener("click", record);
+        previewLoop(performance.now());
+
+        if (new URLSearchParams(location.search).get("auto") === "1") {
+          setTimeout(record, 500);
+        }
+      })();
+    </script>
+  </body>
+</html>

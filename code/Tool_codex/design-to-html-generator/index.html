@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>设计图转 HTML/CSS/JS 结构工具</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Design to structure</p>
+          <h1>设计图转 HTML / CSS / JS 结构</h1>
+          <p class="topbar-desc">上传一张 jpg / png，本地分析尺寸、比例、色板和页面类型，生成可复制的前端基础结构。</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn secondary" id="resetBtn" type="button">重置</button>
+          <button class="btn primary" id="generateBtn" type="button" disabled>生成结构</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="control-panel">
+          <section class="panel-section">
+            <h2>上传设计图</h2>
+            <label class="upload-box" id="uploadBox">
+              <span class="upload-title">选择或拖入设计图.jpg</span>
+              <span class="upload-desc">建议上传完整页面截图，工具会在浏览器本地处理，不会上传到服务器。</span>
+              <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" />
+            </label>
+          </section>
+
+          <section class="panel-section">
+            <h2>生成设置</h2>
+            <div class="field-grid">
+              <label class="field">
+                <span>项目命名</span>
+                <input id="projectName" type="text" value="design-page" />
+              </label>
+              <label class="field">
+                <span>页面类型</span>
+                <select id="pageType">
+                  <option value="auto">自动判断</option>
+                  <option value="landing">落地页 / 官网首屏</option>
+                  <option value="dashboard">SaaS / 数据看板</option>
+                  <option value="mobile">移动端页面</option>
+                  <option value="section">CMS 页面模块</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>输出形态</span>
+                <select id="outputMode">
+                  <option value="separate">三文件结构</option>
+                  <option value="cms">CMS 粘贴片段</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>图片路径</span>
+                <input id="assetPath" type="text" value="./design.jpg" />
+              </label>
+            </div>
+            <label class="toggle-row">
+              <input id="includeReference" type="checkbox" checked />
+              <span>在 HTML 中保留设计图参考区域</span>
+            </label>
+            <label class="toggle-row">
+              <input id="addCmsHints" type="checkbox" checked />
+              <span>输出 CMS 字段替换注释</span>
+            </label>
+          </section>
+
+          <section class="panel-section">
+            <h2>图片分析</h2>
+            <div class="metric-grid" id="metricGrid">
+              <div class="metric">
+                <small>尺寸</small>
+                <strong>-</strong>
+              </div>
+              <div class="metric">
+                <small>比例</small>
+                <strong>-</strong>
+              </div>
+              <div class="metric">
+                <small>明暗</small>
+                <strong>-</strong>
+              </div>
+              <div class="metric">
+                <small>建议</small>
+                <strong>-</strong>
+              </div>
+            </div>
+            <div class="palette" id="palette"></div>
+          </section>
+        </aside>
+
+        <section class="preview-panel">
+          <div class="panel-title-row">
+            <div>
+              <h2>设计图预览</h2>
+              <p id="imageMeta">还没有上传图片</p>
+            </div>
+            <span class="status-pill" id="statusPill">等待上传</span>
+          </div>
+          <div class="preview-stage" id="previewStage">
+            <div class="empty-state">
+              <strong>上传设计图后开始生成</strong>
+              <span>工具会根据图片比例生成首屏、模块、看板或移动端结构，并同步输出 CSS 变量。</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="output-panel">
+          <div class="panel-title-row">
+            <div>
+              <h2>生成代码</h2>
+              <p>按标签查看并复制，也可以分别下载为文件。</p>
+            </div>
+            <button class="btn secondary" id="downloadBtn" type="button" disabled>下载三文件</button>
+          </div>
+
+          <div class="tabs" role="tablist" aria-label="代码类型">
+            <button class="tab active" type="button" data-tab="html">HTML</button>
+            <button class="tab" type="button" data-tab="css">CSS</button>
+            <button class="tab" type="button" data-tab="js">JS</button>
+          </div>
+
+          <div class="code-toolbar">
+            <span id="codeInfo">等待生成</span>
+            <button class="btn small" id="copyBtn" type="button" disabled>复制当前代码</button>
+          </div>
+          <textarea id="codeOutput" spellcheck="false" readonly></textarea>
+        </section>
+      </section>
+    </main>
+
+    <script src="./js/app.js"></script>
+  </body>
+</html>
