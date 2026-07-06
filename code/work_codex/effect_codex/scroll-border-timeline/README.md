@@ -26,7 +26,7 @@ scroll-border-timeline/
 这是无需构建的普通 HTML/CSS/JS 版本。接入平台时：
 
 - 年份、标签和事件列表：直接替换 `index.html` 中每个 `.history-entry` 的内容。
-- 年份数量：复制或删除整个 `.history-entry`；左右方向类名交替使用 `history-entry--left` / `history-entry--right`。
+- 年份数量：直接复制或删除整个 `.history-entry`；CSS 使用 `:nth-of-type(odd/even)` 自动控制左右方向，无需在循环数据中计算方向类名。
 - 主题色：修改 `css/style.css` 顶部的 `--accent`、`--accent-bright`、`--ink` 等变量。
 - 动画触发：在 `js/main.js` 中调整 `start`、`end` 和 `scrub`。
 - GSAP 资源：当前引用工作区公共文件 `../../../js/gsap.min.js` 和 `../../../js/ScrollTrigger.min.js`；复制到 SaaS 后应替换成平台资源地址或 CDN 地址。

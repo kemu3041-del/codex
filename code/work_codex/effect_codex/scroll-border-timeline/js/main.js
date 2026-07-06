@@ -20,13 +20,8 @@
     const contentParts = entry.querySelectorAll(
       ".history-entry__label, .history-entry h2, .history-entry li",
     );
-    const drawsToRight = entry.classList.contains("history-entry--left");
-
     // 横线先朝外侧生长，到达拐点后再向下点亮竖线，模拟一条连续折线路径。
-    gsap.set(horizontalLine, {
-      scaleX: 0,
-      transformOrigin: drawsToRight ? "left center" : "right center",
-    });
+    gsap.set(horizontalLine, { scaleX: 0 });
     gsap.set(verticalLine, { scaleY: 0, transformOrigin: "center top" });
     gsap.set(contentParts, { opacity: 0.24, y: 28 });
 
