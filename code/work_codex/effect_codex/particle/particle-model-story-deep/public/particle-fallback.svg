@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 240" role="img" aria-labelledby="title">
+  <title id="title">Particle Model</title>
+  <rect width="640" height="240" fill="none"/>
+  <g fill="#bbd40f">
+    <circle cx="93" cy="120" r="9"/><circle cx="121" cy="87" r="6"/><circle cx="121" cy="153" r="6"/>
+    <circle cx="155" cy="67" r="4"/><circle cx="155" cy="120" r="8"/><circle cx="155" cy="173" r="4"/>
+    <circle cx="190" cy="88" r="6"/><circle cx="190" cy="152" r="6"/><circle cx="218" cy="120" r="9"/>
+  </g>
+  <text x="265" y="134" fill="#f3f4ed" font-family="Arial, sans-serif" font-size="42" letter-spacing="5">PARTICLE</text>
+</svg>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>模型展示标签</title>
+</head>
+
+<body>
+    <div id="Fpage"></div>
+    <button id="enter-btn">ENTER</button>
+    <script>
+        window.APP_CONFIG = window.APP_CONFIG || {};
+        window.APP_CONFIG.DYNAMIC_MODEL_URL = "./logo4.glb"; 
+    </script>
+    <script type="module" src="./src/main.jsx"></script>
+    <script>
+        // 当 React 里的粒子聚拢完成时，这个函数会被调用
+        window.onIntroFinish = function () {
+            console.log("HTML: Received intro finish signal. Showing text.");
+
+            // 添加 class 让 CSS transition 生效
+            // uiContainer.classList.add('visible');
+            // btn.classList.add('visible');
+        };
+        window.onLoadProgress = (progress) => {
+            console.log("Loading:", progress);
+            // 这里更新你的 loading 条或百分比文字
+            // 例如: document.getElementById('loading-text').innerText = Math.round(progress) + '%';
+
+            if (progress === 100) {
+                // 加载完成，隐藏 loading 界面
+            }
+        };
+
+        window.onExitComplete = function () {
+            console.log("HTML received: Animation Complete");
+
+            const root = document.getElementById('Fpage');
+            const content = document.getElementById('main-content');
+
+            // 移除 Canvas (或者淡出)
+            root.style.opacity = '0';
+
+            // 延迟一点点完全移除 DOM，释放性能
+            setTimeout(() => {
+                root.style.display = 'none';
+                // 恢复页面滚动
+                document.body.style.overflow = 'auto';
+            }, 1000);
+
+            // 显示主内容
+            content.style.display = 'block';
+            // 可以加个淡入动画
+            content.style.opacity = '0';
+            setTimeout(() => { content.style.transition = 'opacity 1s'; content.style.opacity = '1'; }, 50);
+        };
+
+        // 2. 绑定按钮点击事件 -> 触发 React 散场
+        document.getElementById('enter-btn').addEventListener('click', function () {
+            // 隐藏按钮自己
+            this.style.display = 'none';
+
+            // 调用 React 暴露的方法
+            if (window.startExit) {
+                window.startExit();
+            } else {
+                console.warn("React is not ready yet");
+            }
+        });
+
+        // 3. 绑定滚轮事件 (可选)
+        // let hasScrolled = false;
+        // window.addEventListener('wheel', function(e) {
+        //     if (!hasScrolled && e.deltaY > 0) { // 向下滚
+        //         hasScrolled = true;
+        //         document.getElementById('enter-btn').click(); // 模拟点击
+        //     }
+        // });
+    </script>
+</body>
+
+</html>

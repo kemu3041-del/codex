@@ -1,0 +1,328 @@
+:root {
+  color: #f3f4ed;
+  background: #020302;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --particle-accent: #c9ef18;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: #020302;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#particle-background,
+#particle-canvas-root {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#particle-background {
+  z-index: 0;
+  overflow: hidden;
+  opacity: 0;
+  visibility: hidden;
+  background:
+    radial-gradient(circle at 50% 46%, rgb(190 232 18 / 5%), transparent 38%),
+    #020302;
+  transition: opacity 500ms ease, visibility 0s linear 500ms;
+}
+
+/* main 进入视口后才显示固定粒子背景，避免覆盖实际页面的其他业务模块。 */
+.particle-story-active #particle-background {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+#particle-background::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, rgb(2 3 2 / 44%), transparent 32%, transparent 68%, rgb(2 3 2 / 44%));
+}
+
+#particle-canvas-root canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+#particle-canvas-root canvas:active {
+  cursor: grabbing;
+}
+
+#particle-loading {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  left: 50%;
+  margin: 0;
+  color: #74786b;
+  font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.14em;
+  transform: translate(-50%, -50%);
+  transition: opacity 400ms ease;
+}
+
+.particle-ready #particle-loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.particle-static-fallback {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(46vw, 420px);
+  opacity: 0.75;
+  transform: translate(-50%, -50%);
+}
+
+#particle-story-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* 示例普通内容拥有不透明背景和更高层级，实际接入时可直接替换内部业务结构。 */
+.normal-page-section {
+  position: relative;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: #020302;
+  color: #f3f4ed;
+  font: 600 clamp(36px, 8vw, 96px)/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.normal-page-section--intro {
+  min-height: 100vh;
+}
+
+.normal-page-section--outro {
+  min-height: 300vh;
+}
+
+.particle-story-section {
+  display: grid;
+  min-height: 92vh;
+  align-items: center;
+  padding: 16vh clamp(28px, 6vw, 96px);
+  pointer-events: none;
+}
+
+.particle-story-layout {
+  display: grid;
+  width: min(1180px, 100%);
+  grid-template-columns: minmax(260px, 0.82fr) minmax(300px, 1fr);
+  gap: clamp(40px, 8vw, 130px);
+  align-items: center;
+  margin: 0 auto;
+}
+
+.particle-story-section--right .story-media {
+  order: 2;
+}
+
+.particle-story-section--right .story-copy {
+  order: 1;
+  justify-self: end;
+}
+
+.story-media,
+.story-copy {
+  pointer-events: auto;
+}
+
+.story-media {
+  position: relative;
+  width: min(100%, 430px);
+  margin: 0;
+  border: 1px solid rgb(201 239 24 / 28%);
+  background: #080a06;
+  box-shadow: 0 28px 90px rgb(0 0 0 / 55%);
+  overflow: hidden;
+}
+
+.story-media::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(145deg, transparent 50%, rgb(201 239 24 / 8%));
+}
+
+.story-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: saturate(0.78) contrast(1.08);
+}
+
+.story-media figcaption {
+  position: absolute;
+  z-index: 1;
+  right: 14px;
+  bottom: 11px;
+  color: var(--particle-accent);
+  font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.12em;
+}
+
+.story-copy {
+  width: min(100%, 540px);
+}
+
+.story-eyebrow,
+.story-description,
+.story-copy h2 {
+  margin: 0;
+}
+
+.story-eyebrow {
+  margin-bottom: 20px;
+  color: var(--particle-accent);
+  font: 11px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.16em;
+}
+
+.story-copy h2 {
+  max-width: 11em;
+  font-size: clamp(38px, 5.4vw, 78px);
+  font-weight: 430;
+  line-height: 1.04;
+}
+
+.story-description {
+  max-width: 34em;
+  margin-top: 28px;
+  color: #9c9f94;
+  font-size: 15px;
+  line-height: 1.85;
+}
+
+.story-progress {
+  position: fixed;
+  z-index: 6;
+  right: clamp(24px, 4vw, 64px);
+  bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #7d8075;
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 500ms ease, visibility 0s linear 500ms;
+}
+
+.particle-story-active .story-progress {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+.story-progress__track {
+  width: 100px;
+  height: 1px;
+  background: #303329;
+  overflow: hidden;
+}
+
+.story-progress__track i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--particle-accent);
+  transform: scaleX(0.3333);
+  transform-origin: left center;
+  transition: transform 220ms ease-out;
+}
+
+.story-hint {
+  position: fixed;
+  z-index: 6;
+  bottom: 30px;
+  left: clamp(24px, 4vw, 64px);
+  margin: 0;
+  color: #686b62;
+  font: 10px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.14em;
+  writing-mode: vertical-rl;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 500ms ease, visibility 0s linear 500ms;
+}
+
+.particle-story-active .story-hint {
+  opacity: 1;
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+@media (max-width: 768px) {
+  .particle-story-section {
+    min-height: 100vh;
+    padding: 15vh 24px;
+  }
+
+  .particle-story-layout {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .particle-story-section--right .story-media,
+  .particle-story-section--right .story-copy {
+    order: initial;
+    justify-self: auto;
+  }
+
+  .story-media {
+    width: min(76vw, 330px);
+  }
+
+  .story-copy {
+    padding-left: 8vw;
+  }
+
+  .story-copy h2 {
+    font-size: clamp(34px, 11vw, 54px);
+  }
+
+  .story-description {
+    max-width: 28em;
+    font-size: 14px;
+  }
+
+  .story-hint {
+    display: none;
+  }
+
+  .story-progress {
+    right: 20px;
+    bottom: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

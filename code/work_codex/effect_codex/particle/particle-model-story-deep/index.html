@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#02361f" />
+  <title>多模型粒子滚动叙事</title>
+</head>
+
+<body>
+  <!-- 固定粒子背景组件：React 只挂载 Canvas，不负责下方文案。 -->
+  <div id="particle-background" aria-hidden="true">
+    <div id="particle-canvas-root"></div>
+    <p id="particle-loading">正在构建粒子模型…</p>
+  </div>
+
+  <!--
+      普通 HTML 图文结构：可直接复制进 CMS 模板。
+      data-model-index 对应 PARTICLE_STORY_CONFIG.models 的数组下标。
+      data-copy-in / data-copy-out 控制该章节图文淡入、淡出占时间轴的比例。
+    -->
+  <!-- 普通页面前置内容：实际项目中替换为 Hero、导航或业务模块。 -->
+  <section class="normal-page-section normal-page-section--intro">
+    <span>12</span>
+  </section>
+  <main id="particle-story-content">
+    <section class="particle-story-section particle-story-section--left" data-model-index="0" data-shape-index="0"
+      data-model-x="-3.25" data-copy-in="0.2" data-copy-out="0.22">
+      <div class="particle-story-layout">
+        <div class="story-model-slot" aria-hidden="true"></div>
+        <div class="story-copy">
+          <p class="story-eyebrow" data-story-animate>01 / PARTICLE ORIGIN</p>
+          <h2 data-story-animate>轮廓从噪声中显现</h2>
+          <p class="story-description" data-story-animate>
+            边缘、表面与外围粒子共同建立第一层视觉记忆。继续正常滚动，粒子会按滚动进度逐渐离开当前结构。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="particle-story-section particle-story-section--right" data-model-index="1" data-shape-index="1"
+      data-model-x="3.25" data-copy-in="0.18" data-copy-out="0.24">
+      <div class="particle-story-layout">
+        <div class="story-model-slot" aria-hidden="true"></div>
+        <div class="story-copy">
+          <p class="story-eyebrow" data-story-animate>02 / FIELD SHIFT</p>
+          <h2 data-story-animate>滚动决定粒子的形态</h2>
+          <p class="story-description" data-story-animate>
+            模型转换不是一次性播放动画，而是实时跟随滚动进度。向上滚动时，所有粒子会沿原路径自然返回。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="particle-story-section particle-story-section--left" data-model-index="2" data-shape-index="2"
+      data-model-x="-3.25" data-copy-in="0.16" data-copy-out="0.18">
+      <div class="particle-story-layout">
+        <div class="story-model-slot" aria-hidden="true"></div>
+        <div class="story-copy">
+          <p class="story-eyebrow" data-story-animate>03 / MOTION MEMORY</p>
+          <h2 data-story-animate>文案与模型共享滚动时间轴</h2>
+          <p class="story-description" data-story-animate>
+            HTML 负责业务内容，粒子组件只负责背景。模型、颜色、粒子数量和文字节奏都可以在当前页面配置。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="particle-story-section particle-story-section--right" data-model-index="3" data-shape-index="3"
+      data-model-x="3.25" data-copy-in="0.2" data-copy-out="0.2">
+      <div class="particle-story-layout">
+        <div class="story-model-slot" aria-hidden="true"></div>
+        <div class="story-copy">
+          <p class="story-eyebrow" data-story-animate>03 / MOTION MEMORY</p>
+          <h2 data-story-animate>文案与模型共享滚动时间轴</h2>
+          <p class="story-description" data-story-animate>
+            HTML 负责业务内容，粒子组件只负责背景。模型、颜色、粒子数量和文字节奏都可以在当前页面配置。
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- 普通页面后续内容：粒子背景离开 main 后会自动隐藏。 -->
+  <section class="normal-page-section normal-page-section--outro">
+    <span>34</span>
+  </section>
+
+  <aside class="story-progress" aria-label="故事进度">
+    <span id="story-progress-current">01</span>
+    <div class="story-progress__track"><i id="story-progress-bar"></i></div>
+    <span id="story-progress-total">04</span>
+  </aside>
+  <p class="story-hint">SCROLL TO TRANSFORM</p>
+
+  <script>
+    // 粒子背景配置：可在不同项目中按模型分别设置颜色、数量和点尺寸。
+    window.PARTICLE_STORY_CONFIG = {
+      particleColor: '#eef6ed',
+      highlightColor: '#ffffff',
+      fallbackImageUrl: './particle-fallback.svg',
+      models: [
+        {
+          modelUrl: './logo4.glb',
+          particleColor: '#eef6ed',
+          highlightColor: '#ffffff',
+          particleCount: { desktop: 3200, mobile: 1600 },
+          particleSizeScale: 1.08
+        },
+        {
+          modelUrl: './logo3.glb',
+          particleColor: '#f5fff6',
+          highlightColor: '#ffffff',
+          particleCount: { desktop: 2500, mobile: 1300 },
+          particleSizeScale: 1.18
+        },
+        {
+          modelUrl: './logo.glb',
+          particleColor: '#edf7eb',
+          highlightColor: '#ffffff',
+          particleCount: { desktop: 3400, mobile: 1750 },
+          particleSizeScale: 1.04
+        },
+        {
+          modelUrl: './logo.glb',
+          particleColor: '#f7fff5',
+          highlightColor: '#ffffff',
+          particleCount: { desktop: 3400, mobile: 1750 },
+          particleSizeScale: 1.08
+        }
+      ],
+      scatterStrength: 3.1,
+      curlStrength: 0.95,
+      // 主体切换现在是旧主体放大淡出、新主体从远处出现；阶段值保留给 Shader 调参兼容。
+      morphPhases: {
+        // 进度到 0.4 时，旧模型完全进入散点状态。
+        scatterEnd: 0.4,
+        // 进度到 0.6 后，新主体开始从远处变得更完整。
+        gatherStart: 0.6
+      },
+      edgeRatio: 0.72,
+      atmosphereRatio: 0.24,
+      environment: {
+        desktopCount: 5600,
+        mobileCount: 2800,
+        spreadX: 36,
+        spreadY: 18,
+        spreadZ: 28,
+        goldRatio: 0.36,
+        foregroundRatio: 0.2,
+        // 背景形状粒子密度：越大球体/圆柱越实，越小越稀疏。
+        volumeRatio: 0.14,
+        // 重点调这里：背景形状粒子大小。建议 0.85-1.4，越大越占屏。
+        volumeScale: 1.5,
+        // 背景所有粒子的点尺寸：普通散点和形状簇共用这一套机制。
+        sizeScale: 1.02,
+        travelStrength: 8.2
+      },
+      desktop: { particleCount: 3600, modelSize: 6.2, maxDpr: 1.75, cameraZ: 11.6 },
+      mobile: { particleCount: 1800, modelSize: 4.6, maxDpr: 1.35, cameraZ: 12 }
+    };
+
+    // GSAP 图文时间轴配置：项目接入时无需进入 React 代码调节节奏。
+    window.PARTICLE_STORY_TIMELINE = {
+      // 每个滚动章节的选择器，同时决定章节数量和模型切换顺序。
+      sectionSelector: '.particle-story-section',
+
+      // 章节中需要执行动画的元素。
+      animatedSelector: '[data-story-animate]',
+
+      // 章节顶部到达视口高度 88% 时，开始播放文案动画。
+      copyStart: 'top 88%',
+
+      // 章节底部到达视口高度 12% 时，结束文案动画。
+      copyEnd: 'bottom 12%',
+
+      // 滚动与动画之间的平滑延迟，单位近似为秒。
+      scrub: 0.45,
+
+      // 文案进入前向下偏移 54px。
+      enterY: 54,
+
+      // 文案退出后向上偏移 42px。
+      exitY: -42
+    };
+    /*
+      scrub: 0.1  // 紧跟滚动，响应快
+      scrub: 0.45 // 当前效果，比较自然
+      scrub: 1    // 更柔和，但有明显延迟
+      scrub: true // 完全直接跟随，没有缓冲时间
+    */
+  </script>
+  <script src="./vendor/gsap.min.js"></script>
+  <script src="./vendor/ScrollTrigger.min.js"></script>
+  <script type="module" src="./src/main.jsx"></script>
+  <script type="module" src="./src/story-timeline.js"></script>
+</body>
+
+</html>

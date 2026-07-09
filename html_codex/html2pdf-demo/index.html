@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML 导出 PDF 示例</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background: #eef2f6;
+      color: #172033;
+      font: 16px/1.7 system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    .toolbar {
+      width: min(794px, 100%);
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 20px;
+      background: #125bc4;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .6; cursor: wait; }
+    #status { color: #526075; }
+
+    #pdf-content {
+      width: min(794px, 100%);
+      min-height: 700px;
+      margin: 0 auto;
+      padding: 56px;
+      background: #fff;
+      color: #172033;
+      box-shadow: 0 12px 36px rgba(23, 32, 51, .12);
+    }
+
+    h1 { margin: 0 0 8px; font-size: 34px; line-height: 1.25; }
+    h2 { margin: 32px 0 12px; font-size: 21px; }
+    p { margin: 0 0 14px; }
+    .meta { color: #647087; }
+    .rule { height: 3px; margin: 26px 0; background: #125bc4; }
+
+    .contact {
+      margin-top: 28px;
+      padding: 20px 24px;
+      border: 1px solid #dce3ec;
+      border-radius: 10px;
+      background: #f7f9fc;
+      break-inside: avoid;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 20px 12px; }
+      #pdf-content { padding: 30px 24px; }
+      .toolbar { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <button id="download-button" type="button">下载 PDF</button>
+    <span id="status">点击按钮后将生成“网页示例.pdf”</span>
+  </div>
+
+  
+  <h1>HTML 导出 PDF 示例</h1>
+    <p class="meta">这是需要导出的网页区域</p>
+    <div class="rule"></div>
+
+
+  <main id="pdf-content">
+    <h1>HTML 导出 PDF 示例</h1>
+    <p class="meta">这是需要导出的网页区域</p>
+    <div class="rule"></div>
+
+    <h2>示例内容</h2>
+    <p>如果你能在下载的 PDF 中看到这段文字，说明 html2pdf.js 工作正常。</p>
+    <p>实际使用时，把需要导出的内容放进 <code>#pdf-content</code> 容器即可。</p>
+
+    <section class="contact">
+      <strong>联系我们</strong>
+      <p>客户服务电话：+86 400-998-2970</p>
+      <p>售后服务邮箱：CC@example.com</p>
+    </section>
+  </main>
+
+  <script src="vendor/html2pdf.bundle.min.js"></script>
+  <script>
+    const button = document.getElementById("download-button");
+    const status = document.getElementById("status");
+
+    button.addEventListener("click", async () => {
+      const element = document.getElementById("pdf-content");
+
+      if (typeof html2pdf !== "function") {
+        status.textContent = "html2pdf.js 加载失败，请检查网络连接";
+        return;
+      }
+
+      button.disabled = true;
+      status.textContent = "正在生成 PDF…";
+
+      try {
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready;
+        }
+
+        await html2pdf().set({
+          filename: "网页示例.pdf",
+          margin: [10, 10, 10, 10],
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff"
+          },
+          jsPDF: {
+            unit: "mm",
+            format: "a4",
+            orientation: "portrait"
+          },
+          pagebreak: { mode: ["css", "legacy"] }
+        }).from(element).save();
+
+        status.textContent = "PDF 已生成";
+      } catch (error) {
+        console.error(error);
+        status.textContent = "生成失败，请查看浏览器控制台";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

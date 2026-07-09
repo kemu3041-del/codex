@@ -1,0 +1,184 @@
+:root {
+  color: #f3f4ed;
+  background: #050505;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --particle-accent: #bbd40f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#particle-root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  min-height: 100vh;
+  overflow: hidden;
+  background: #050505;
+}
+
+button {
+  font: inherit;
+}
+
+.main-content {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 600ms ease, transform 600ms ease;
+}
+
+.main-content.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+.main-content h1,
+.main-content p {
+  margin: 0;
+}
+
+.main-content h1 {
+  font-size: clamp(28px, 5vw, 64px);
+  font-weight: 500;
+}
+
+.main-content p:not(.eyebrow) {
+  color: #a7a99f;
+}
+
+.eyebrow {
+  color: var(--particle-accent);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+}
+
+.particle-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  overflow: hidden;
+  background: #020302;
+  opacity: 1;
+  transition: opacity 650ms ease;
+}
+
+.particle-intro.is-exiting {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.particle-root,
+.particle-root canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+
+.particle-root canvas:active {
+  cursor: grabbing;
+}
+
+.intro-status {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  transform: translateX(-50%);
+  color: #85877e;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  transition: opacity 300ms ease;
+}
+
+.is-ready .intro-status {
+  opacity: 0.72;
+}
+
+.enter-button {
+  position: absolute;
+  left: 50%;
+  bottom: 13%;
+  min-width: 138px;
+  padding: 13px 28px;
+  border: 1px solid var(--particle-accent);
+  color: var(--particle-accent);
+  background: rgb(2 3 2 / 72%);
+  letter-spacing: 0.16em;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 10px);
+  transition: color 220ms ease, background 220ms ease, opacity 400ms ease, transform 400ms ease;
+}
+
+.is-ready .enter-button {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+.enter-button:hover {
+  color: #050505;
+  background: var(--particle-accent);
+}
+
+.enter-button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.static-fallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: radial-gradient(circle, #161a08 0, #020302 46%);
+}
+
+.static-fallback img {
+  width: min(52vw, 360px);
+  max-height: 42vh;
+  object-fit: contain;
+}
+
+.static-fallback span {
+  color: #85877e;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .enter-button {
+    bottom: 15%;
+  }
+
+  .intro-status {
+    bottom: 9%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

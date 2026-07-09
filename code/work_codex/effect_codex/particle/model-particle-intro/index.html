@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <title>模型粒子开场</title>
+</head>
+
+<body>
+  <main id="main-content" class="main-content" aria-hidden="true">
+    <p class="eyebrow">MODEL PARTICLE INTRO</p>
+    <h1>主页面内容已就绪</h1>
+    <p>此区域替换为实际 SaaS/CMS 页面内容。</p>
+  </main>
+
+  <section id="particle-intro" class="particle-intro" aria-label="粒子模型开场">
+    <div id="particle-root" class="particle-root"></div>
+    <div class="intro-status" aria-live="polite">
+      <span id="loading-text">模型加载 0%</span>
+    </div>
+    <button id="enter-btn" class="enter-button" type="button">ENTER</button>
+  </section>
+
+  <script>
+    // SaaS/CMS 只需覆盖需要修改的字段；换模型时通常只改 modelUrl。
+    window.PARTICLE_INTRO_CONFIG = {
+      modelUrl: './che.glb',
+      fallbackImageUrl: './particle-fallback.svg',
+      particleColor: '#bbd40f'
+    };
+
+    const intro = document.getElementById('particle-intro');
+    const mainContent = document.getElementById('main-content');
+    const enterButton = document.getElementById('enter-btn');
+    const loadingText = document.getElementById('loading-text');
+
+    window.onModelLoadProgress = function (progress) {
+      const safeProgress = Math.max(0, Math.min(100, Math.round(progress)));
+      loadingText.textContent = `模型加载 ${safeProgress}%`;
+    };
+
+    window.onParticleIntroReady = function () {
+      intro.classList.add('is-ready');
+      loadingText.textContent = '向下滚动或点击进入';
+    };
+
+    window.onParticleIntroExit = function () {
+      intro.classList.add('is-exiting');
+      mainContent.classList.add('is-visible');
+      mainContent.setAttribute('aria-hidden', 'false');
+
+      // 等 CSS 淡出结束后卸载 React/Three.js，释放监听器和 GPU 资源。
+      window.setTimeout(function () {
+        window.unmountParticleIntro?.();
+        intro.hidden = true;
+      }, 700);
+    };
+
+    enterButton.addEventListener('click', function () {
+      window.startParticleExit?.();
+    });
+  </script>
+  <script type="module" src="./src/main.jsx"></script>
+</body>
+
+</html>
