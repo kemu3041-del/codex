@@ -1,10 +1,12 @@
-import { getSectionCenters } from './scroll-math.js';
+import { getPinnedStoryState, getSectionCenters } from './scroll-math.js';
 
 const gsap = window.gsap;
 const ScrollTrigger = window.ScrollTrigger;
 const timelineConfig = {
   sectionSelector: '.particle-story-section',
   animatedSelector: '[data-story-animate]',
+  stageMode: window.PARTICLE_STORY_CONFIG?.stageMode || 'pinned',
+  sectionsPerViewport: window.PARTICLE_STORY_CONFIG?.sectionsPerViewport || 1,
   copyStart: 'top 88%',
   copyEnd: 'bottom 12%',
   scrub: 0.45,
@@ -16,6 +18,7 @@ const timelineConfig = {
 gsap.registerPlugin(ScrollTrigger);
 
 const sections = gsap.utils.toArray(timelineConfig.sectionSelector);
+const storyContent = document.getElementById('particle-story-content');
 const progressCurrent = document.getElementById('story-progress-current');
 const progressTotal = document.getElementById('story-progress-total');
 const progressBar = document.getElementById('story-progress-bar');
@@ -39,6 +42,21 @@ function getModelX(section, fallbackX = 0) {
   return Number.isFinite(modelX) ? modelX : fallbackX;
 }
 
+function getModelConfig(section, fallbackIndex) {
+  const modelIndex = getModelIndex(section, fallbackIndex);
+  return window.PARTICLE_STORY_CONFIG?.models?.[modelIndex] || {};
+}
+
+function getModelFocus(section, fallbackIndex) {
+  const model = getModelConfig(section, fallbackIndex);
+  return {
+    x: getModelX(section, Number(model.focusX) || 0),
+    y: Number(model.focusY) || 0,
+    z: Number(model.focusZ) || 0,
+    cameraBias: Number(model.cameraBias) || 0
+  };
+}
+
 function getShapeIndex(section, fallbackIndex = 0) {
   const shapeIndex = Number(section.dataset.shapeIndex);
   return Number.isFinite(shapeIndex) ? shapeIndex : fallbackIndex;
@@ -50,6 +68,9 @@ function exposeMorphState(
   progress,
   storyProgress,
   modelX,
+  modelY,
+  modelZ,
+  cameraBias,
   fromShapeIndex,
   toShapeIndex,
   shapeProgress
@@ -59,6 +80,9 @@ function exposeMorphState(
   document.documentElement.dataset.particleProgress = progress.toFixed(4);
   document.documentElement.dataset.particleStoryProgress = storyProgress.toFixed(4);
   document.documentElement.dataset.particleModelTargetX = modelX.toFixed(2);
+  document.documentElement.dataset.particleModelTargetY = modelY.toFixed(2);
+  document.documentElement.dataset.particleModelTargetZ = modelZ.toFixed(2);
+  document.documentElement.dataset.particleCameraBias = cameraBias.toFixed(2);
   document.documentElement.dataset.particleShapeFrom = String(fromShapeIndex);
   document.documentElement.dataset.particleShapeTo = String(toShapeIndex);
   document.documentElement.dataset.particleShapeProgress = shapeProgress.toFixed(4);
@@ -70,11 +94,26 @@ function applyMorph(
   progress,
   storyProgress = progress,
   modelX = 0,
+  modelY = 0,
+  modelZ = 0,
+  cameraBias = 0,
   fromShapeIndex = 0,
   toShapeIndex = fromShapeIndex,
   shapeProgress = 0
 ) {
-  exposeMorphState(fromIndex, toIndex, progress, storyProgress, modelX, fromShapeIndex, toShapeIndex, shapeProgress);
+  exposeMorphState(
+    fromIndex,
+    toIndex,
+    progress,
+    storyProgress,
+    modelX,
+    modelY,
+    modelZ,
+    cameraBias,
+    fromShapeIndex,
+    toShapeIndex,
+    shapeProgress
+  );
   window.dispatchEvent(new CustomEvent('particle-story-morph', {
     detail: {
       fromIndex,
@@ -82,6 +121,9 @@ function applyMorph(
       progress,
       storyProgress,
       modelX,
+      modelY,
+      modelZ,
+      cameraBias,
       fromShapeIndex,
       toShapeIndex,
       shapeProgress
@@ -103,7 +145,7 @@ function syncModelToScroll() {
   if (scrollPosition <= centers[0]) {
     const modelIndex = getModelIndex(sections[0], 0);
     const shapeIndex = getShapeIndex(sections[0], 0);
-    applyMorph(modelIndex, modelIndex, 0, 0, getModelX(sections[0]), shapeIndex, shapeIndex, 0);
+    applyMorph(modelIndex, modelIndex, 0, 0, getModelX(sections[0]), 0, 0, 0, shapeIndex, shapeIndex, 0);
     setProgress(0);
     return;
   }
@@ -111,7 +153,7 @@ function syncModelToScroll() {
   if (scrollPosition >= centers[lastIndex]) {
     const modelIndex = getModelIndex(sections[lastIndex], lastIndex);
     const shapeIndex = getShapeIndex(sections[lastIndex], lastIndex);
-    applyMorph(modelIndex, modelIndex, 1, 1, getModelX(sections[lastIndex]), shapeIndex, shapeIndex, 1);
+    applyMorph(modelIndex, modelIndex, 1, 1, getModelX(sections[lastIndex]), 0, 0, 0, shapeIndex, shapeIndex, 1);
     setProgress(lastIndex);
     return;
   }
@@ -142,6 +184,9 @@ function syncModelToScroll() {
         progress,
         storyProgress,
         modelX,
+        0,
+        0,
+        0,
         fromShapeIndex,
         toShapeIndex,
         shapeProgress
@@ -157,9 +202,11 @@ function createStoryVisibilityTrigger() {
 
   // 粒子 Canvas 使用 fixed 定位，因此通过 main 的可见状态限制它只出现在叙事区域。
   storyVisibilityTrigger = ScrollTrigger.create({
-    trigger: storyContent,
-    start: 'top bottom',
-    end: 'bottom top',
+      trigger: storyContent,
+      start: 'top bottom',
+      end: () => timelineConfig.stageMode === 'pinned'
+        ? `+=${getPinnedScrollDistance() + window.innerHeight}`
+        : 'bottom top',
     onToggle(self) {
       document.documentElement.classList.toggle('particle-story-active', self.isActive);
     },
@@ -167,6 +214,71 @@ function createStoryVisibilityTrigger() {
       document.documentElement.classList.toggle('particle-story-active', self.isActive);
     }
   });
+}
+
+function syncActiveModel() {
+  if (timelineConfig.stageMode === 'pinned') {
+    syncPinnedModel();
+  } else {
+    syncModelToScroll();
+  }
+}
+
+function updatePinnedCopy(activeIndex) {
+  sections.forEach((section, index) => {
+    section.classList.toggle('is-active', index === activeIndex);
+    section.classList.toggle('is-before', index < activeIndex);
+    section.classList.toggle('is-after', index > activeIndex);
+  });
+}
+
+function getPinnedScrollDistance() {
+  return getPinnedStoryState({
+    scrollY: 0,
+    stageTop: 0,
+    viewportHeight: window.innerHeight,
+    sectionCount: sections.length,
+    sectionsPerViewport: timelineConfig.sectionsPerViewport
+  }).scrollDistance;
+}
+
+function syncPinnedModel(self = modelScrollTrigger) {
+  if (sections.length === 0 || !self) return;
+
+  const state = getPinnedStoryState({
+    scrollY: self.scroll(),
+    stageTop: self.start,
+    viewportHeight: window.innerHeight,
+    sectionCount: sections.length,
+    sectionsPerViewport: timelineConfig.sectionsPerViewport
+  });
+  const fromSection = sections[state.fromIndex];
+  const toSection = sections[state.toIndex];
+  const fromFocus = getModelFocus(fromSection, state.fromIndex);
+  const toFocus = getModelFocus(toSection, state.toIndex);
+  const modelX = gsap.utils.interpolate(fromFocus.x, toFocus.x, state.segmentProgress);
+  const modelY = gsap.utils.interpolate(fromFocus.y, toFocus.y, state.segmentProgress);
+  const modelZ = gsap.utils.interpolate(fromFocus.z, toFocus.z, state.segmentProgress);
+  const cameraBias = gsap.utils.interpolate(fromFocus.cameraBias, toFocus.cameraBias, state.segmentProgress);
+  const fromShapeIndex = getShapeIndex(fromSection, state.fromIndex);
+  const toShapeIndex = getShapeIndex(toSection, state.toIndex);
+  const shapeProgress = gsap.utils.clamp(0, 1, gsap.utils.mapRange(0.32, 0.68, 0, 1, state.segmentProgress));
+
+  applyMorph(
+    getModelIndex(fromSection, state.fromIndex),
+    getModelIndex(toSection, state.toIndex),
+    state.segmentProgress,
+    state.progress,
+    modelX,
+    modelY,
+    modelZ,
+    cameraBias,
+    fromShapeIndex,
+    toShapeIndex,
+    shapeProgress
+  );
+  updatePinnedCopy(state.activeIndex);
+  setProgress(state.activeIndex);
 }
 
 function createCopyTimelines() {
@@ -205,8 +317,26 @@ function createCopyTimelines() {
 }
 
 function createModelTimeline() {
+  if (timelineConfig.stageMode === 'pinned') {
+    document.documentElement.classList.add('particle-story-pinned');
+    updatePinnedCopy(0);
+    modelScrollTrigger = ScrollTrigger.create({
+      trigger: storyContent,
+      start: 'top top',
+      end: () => `+=${getPinnedScrollDistance()}`,
+      pin: true,
+      pinSpacing: true,
+      scrub: 0.42,
+      anticipatePin: 1,
+      invalidateOnRefresh: true,
+      onUpdate: syncPinnedModel,
+      onRefresh: syncPinnedModel
+    });
+    return;
+  }
+
   modelScrollTrigger = ScrollTrigger.create({
-    trigger: document.getElementById('particle-story-content'),
+    trigger: storyContent,
     start: 'top top',
     end: 'bottom bottom',
     onUpdate: syncModelToScroll,
@@ -220,25 +350,31 @@ function initializeTimeline() {
 
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     gsap.set(timelineConfig.animatedSelector, { autoAlpha: 1, y: 0 });
+    updatePinnedCopy(0);
     return;
   }
 
-  createCopyTimelines();
+  if (timelineConfig.stageMode !== 'pinned') createCopyTimelines();
   createModelTimeline();
   ScrollTrigger.refresh();
-  syncModelToScroll();
+  if (timelineConfig.stageMode === 'pinned') {
+    syncPinnedModel();
+  } else {
+    syncModelToScroll();
+  }
 }
 
-window.addEventListener('particle-story-ready', syncModelToScroll);
-window.addEventListener('resize', syncModelToScroll, { passive: true });
+window.addEventListener('particle-story-ready', syncActiveModel);
+window.addEventListener('resize', syncActiveModel, { passive: true });
 initializeTimeline();
 
 window.destroyParticleStoryTimeline = function () {
   storyVisibilityTrigger?.kill();
   modelScrollTrigger?.kill();
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-  window.removeEventListener('particle-story-ready', syncModelToScroll);
-  window.removeEventListener('resize', syncModelToScroll);
+  window.removeEventListener('particle-story-ready', syncActiveModel);
+  window.removeEventListener('resize', syncActiveModel);
   document.documentElement.classList.remove('particle-story-active');
+  document.documentElement.classList.remove('particle-story-pinned');
   delete window.destroyParticleStoryTimeline;
 };

@@ -26,7 +26,7 @@
   </section>
   <main id="particle-story-content">
     <section class="particle-story-section particle-story-section--left" data-model-index="0" data-shape-index="0"
-      data-model-x="-3.25" data-copy-in="0.2" data-copy-out="0.22">
+      data-model-x="-3.05" data-copy-in="0.2" data-copy-out="0.22">
       <div class="particle-story-layout">
         <div class="story-model-slot" aria-hidden="true"></div>
         <div class="story-copy">
@@ -40,7 +40,7 @@
     </section>
 
     <section class="particle-story-section particle-story-section--right" data-model-index="1" data-shape-index="1"
-      data-model-x="3.25" data-copy-in="0.18" data-copy-out="0.24">
+      data-model-x="3.05" data-copy-in="0.18" data-copy-out="0.24">
       <div class="particle-story-layout">
         <div class="story-model-slot" aria-hidden="true"></div>
         <div class="story-copy">
@@ -54,7 +54,7 @@
     </section>
 
     <section class="particle-story-section particle-story-section--left" data-model-index="2" data-shape-index="2"
-      data-model-x="-3.25" data-copy-in="0.16" data-copy-out="0.18">
+      data-model-x="-2.85" data-copy-in="0.16" data-copy-out="0.18">
       <div class="particle-story-layout">
         <div class="story-model-slot" aria-hidden="true"></div>
         <div class="story-copy">
@@ -68,14 +68,14 @@
     </section>
 
     <section class="particle-story-section particle-story-section--right" data-model-index="3" data-shape-index="3"
-      data-model-x="3.25" data-copy-in="0.2" data-copy-out="0.2">
+      data-model-x="2.75" data-copy-in="0.2" data-copy-out="0.2">
       <div class="particle-story-layout">
         <div class="story-model-slot" aria-hidden="true"></div>
         <div class="story-copy">
-          <p class="story-eyebrow" data-story-animate>03 / MOTION MEMORY</p>
-          <h2 data-story-animate>文案与模型共享滚动时间轴</h2>
+          <p class="story-eyebrow" data-story-animate>04 / PRODUCT SIGNAL</p>
+          <h2 data-story-animate>粒子聚焦到产品记忆点</h2>
           <p class="story-description" data-story-animate>
-            HTML 负责业务内容，粒子组件只负责背景。模型、颜色、粒子数量和文字节奏都可以在当前页面配置。
+            最后一段把空间尘埃、前景掠过粒子和主体高亮收束到同一个视觉焦点，适合承接产品卖点或 CTA 模块。
           </p>
         </div>
       </div>
@@ -96,6 +96,8 @@
   <script>
     // 粒子背景配置：可在不同项目中按模型分别设置颜色、数量和点尺寸。
     window.PARTICLE_STORY_CONFIG = {
+      stageMode: 'pinned',
+      sectionsPerViewport: 1,
       particleColor: '#eef6ed',
       highlightColor: '#ffffff',
       fallbackImageUrl: './particle-fallback.svg',
@@ -105,32 +107,44 @@
           particleColor: '#eef6ed',
           highlightColor: '#ffffff',
           particleCount: { desktop: 3200, mobile: 1600 },
-          particleSizeScale: 1.08
+          particleSizeScale: 1.16,
+          focusY: 0.08,
+          focusZ: 0,
+          cameraBias: -0.22
         },
         {
           modelUrl: './logo3.glb',
           particleColor: '#f5fff6',
           highlightColor: '#ffffff',
           particleCount: { desktop: 2500, mobile: 1300 },
-          particleSizeScale: 1.18
+          particleSizeScale: 1.28,
+          focusY: -0.08,
+          focusZ: -0.2,
+          cameraBias: 0.28
         },
         {
           modelUrl: './logo.glb',
           particleColor: '#edf7eb',
           highlightColor: '#ffffff',
           particleCount: { desktop: 3400, mobile: 1750 },
-          particleSizeScale: 1.04
+          particleSizeScale: 1.14,
+          focusY: 0.12,
+          focusZ: 0.18,
+          cameraBias: -0.08
         },
         {
           modelUrl: './logo.glb',
-          particleColor: '#f7fff5',
+          particleColor: '#d5df68',
           highlightColor: '#ffffff',
           particleCount: { desktop: 3400, mobile: 1750 },
-          particleSizeScale: 1.08
+          particleSizeScale: 1.32,
+          focusY: -0.04,
+          focusZ: -0.32,
+          cameraBias: 0.18
         }
       ],
-      scatterStrength: 3.1,
-      curlStrength: 0.95,
+      scatterStrength: 4.2,
+      curlStrength: 1.28,
       // 主体切换现在是旧主体放大淡出、新主体从远处出现；阶段值保留给 Shader 调参兼容。
       morphPhases: {
         // 进度到 0.4 时，旧模型完全进入散点状态。
@@ -138,26 +152,32 @@
         // 进度到 0.6 后，新主体开始从远处变得更完整。
         gatherStart: 0.6
       },
-      edgeRatio: 0.72,
-      atmosphereRatio: 0.24,
+      edgeRatio: 0.82,
+      atmosphereRatio: 0.28,
+      highlightRatio: 0.055,
       environment: {
-        desktopCount: 5600,
-        mobileCount: 2800,
-        spreadX: 36,
-        spreadY: 18,
-        spreadZ: 28,
-        goldRatio: 0.36,
-        foregroundRatio: 0.2,
+        desktopCount: 7600,
+        mobileCount: 3400,
+        spreadX: 42,
+        spreadY: 20,
+        spreadZ: 34,
+        goldRatio: 0.38,
+        foregroundRatio: 0.24,
         // 背景形状粒子密度：越大球体/圆柱越实，越小越稀疏。
-        volumeRatio: 0.14,
+        volumeRatio: 0.18,
         // 重点调这里：背景形状粒子大小。建议 0.85-1.4，越大越占屏。
-        volumeScale: 1.5,
+        volumeScale: 1.72,
         // 背景所有粒子的点尺寸：普通散点和形状簇共用这一套机制。
-        sizeScale: 1.02,
-        travelStrength: 8.2
+        sizeScale: 1.08,
+        travelStrength: 11.6,
+        layers: {
+          far: { countRatio: 0.5, sizeScale: 0.68, speed: 0.54, opacity: 0.62 },
+          mid: { countRatio: 0.34, sizeScale: 1.08, speed: 1.12, opacity: 0.9 },
+          near: { countRatio: 0.16, sizeScale: 2.05, speed: 1.78, opacity: 1.08 }
+        }
       },
-      desktop: { particleCount: 3600, modelSize: 6.2, maxDpr: 1.75, cameraZ: 11.6 },
-      mobile: { particleCount: 1800, modelSize: 4.6, maxDpr: 1.35, cameraZ: 12 }
+      desktop: { particleCount: 4200, modelSize: 6.4, maxDpr: 1.75, cameraZ: 11.4 },
+      mobile: { particleCount: 1900, modelSize: 4.6, maxDpr: 1.35, cameraZ: 12 }
     };
 
     // GSAP 图文时间轴配置：项目接入时无需进入 React 代码调节节奏。

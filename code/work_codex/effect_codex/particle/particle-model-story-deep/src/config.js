@@ -1,4 +1,8 @@
 const DEFAULT_CONFIG = {
+  // 长页面中的沉浸段默认使用 pinned 舞台，让滚动驱动内部叙事而不是真实页面位移。
+  stageMode: 'pinned',
+  // 每个段落占用多少个视口高度的滚动距离，数值越大转场越慢。
+  sectionsPerViewport: 1,
   // 全局默认粒子颜色；单个模型没有配置 particleColor 时使用该颜色。
   particleColor: '#c9ef18',
   // 少量高亮粒子的颜色，用于制造亮点和层次。
@@ -40,7 +44,7 @@ const DEFAULT_CONFIG = {
     gatherStart: 0.6
   },
   // 从模型轮廓边缘采样的粒子比例，其余粒子从表面采样。
-  edgeRatio: 0.72,
+  edgeRatio: 0.78,
   // EdgesGeometry 的边缘夹角阈值，单位为度；越小识别的边越多。
   edgeThreshold: 20,
   // 边缘粒子采用簇状采样的比例，用于形成疏密不均的自然轮廓。
@@ -58,7 +62,7 @@ const DEFAULT_CONFIG = {
   // 氛围粒子离开模型表面的最大距离。
   atmosphereMaxDistance: 7,
   // 使用 highlightColor 和较大尺寸的高亮粒子比例。
-  highlightRatio: 0.03,
+  highlightRatio: 0.045,
   // 允许参与采样的最大三角形数量，防止超高面数模型阻塞页面。
   sourceTriangleLimit: 250000,
   // 鼠标附近的粒子排斥半径，使用模型世界坐标单位。
@@ -101,7 +105,16 @@ const DEFAULT_CONFIG = {
     // 背景所有粒子的点尺寸倍率，普通散点和球体/圆柱形状簇共用同一套点大小机制。
     sizeScale: 1,
     // 滚动推进时镜头向前穿过粒子场的强度。
-    travelStrength: 7.5
+    travelStrength: 7.5,
+    // 远景、中景、前景三层粒子共用一个 Points，但用属性区分速度、尺寸和透明度。
+    layers: {
+      // 远景负责建立大范围空气感，数量多、尺寸小、移动慢。
+      far: { countRatio: 0.52, sizeScale: 0.72, speed: 0.56, opacity: 0.58 },
+      // 中景形成横向流线和漩涡，是滚动时最明显的空间层。
+      mid: { countRatio: 0.32, sizeScale: 1, speed: 1, opacity: 0.82 },
+      // 前景用少量大颗粒掠过镜头，强化参考站那种穿行感。
+      near: { countRatio: 0.16, sizeScale: 1.85, speed: 1.68, opacity: 1 }
+    }
   },
   // 桌面端性能与相机配置。
   desktop: {
@@ -129,11 +142,21 @@ const DEFAULT_CONFIG = {
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
+function mergeEnvironmentLayers(externalLayers = {}) {
+  return Object.fromEntries(
+    Object.entries(DEFAULT_CONFIG.environment.layers).map(([key, defaults]) => [
+      key,
+      { ...defaults, ...externalLayers[key] }
+    ])
+  );
+}
+
 export function getStoryConfig() {
   const external = window.PARTICLE_STORY_CONFIG || {};
   const config = {
     ...DEFAULT_CONFIG,
     ...external,
+    stageMode: external.stageMode || DEFAULT_CONFIG.stageMode,
     models: external.models?.length ? external.models : DEFAULT_CONFIG.models,
     // 阶段配置需要深合并，避免只覆盖一个字段时丢失另一个默认边界。
     morphPhases: { ...DEFAULT_CONFIG.morphPhases, ...external.morphPhases },
@@ -144,6 +167,7 @@ export function getStoryConfig() {
   };
 
   config.edgeRatio = clamp(Number(config.edgeRatio) || 0, 0, 1);
+  config.sectionsPerViewport = clamp(Number(config.sectionsPerViewport) || 1, 0.5, 2.5);
   config.edgeClusterRatio = clamp(Number(config.edgeClusterRatio) || 0, 0, 1);
   config.atmosphereRatio = clamp(Number(config.atmosphereRatio) || 0, 0, 0.5);
   config.highlightRatio = clamp(Number(config.highlightRatio) || 0, 0, 0.15);
@@ -160,6 +184,13 @@ export function getStoryConfig() {
   config.environment.volumeScale = clamp(Number(config.environment.volumeScale) || 1, 0.8, 3.2);
   config.environment.sizeScale = clamp(Number(config.environment.sizeScale) || 1, 0.2, 4);
   config.environment.travelStrength = clamp(Number(config.environment.travelStrength) || 0, 0, 24);
+  config.environment.layers = mergeEnvironmentLayers(external.environment?.layers);
+  Object.values(config.environment.layers).forEach((layer) => {
+    layer.countRatio = clamp(Number(layer.countRatio) || 0, 0.05, 0.9);
+    layer.sizeScale = clamp(Number(layer.sizeScale) || 1, 0.2, 4);
+    layer.speed = clamp(Number(layer.speed) || 1, 0.1, 3);
+    layer.opacity = clamp(Number(layer.opacity) || 1, 0.05, 1.5);
+  });
   // 边界远离 0 和 1，保证打散与汇聚阶段都保留可见的滚动距离。
   const scatterEnd = clamp(Number(config.morphPhases.scatterEnd), 0.05, 0.95);
   const gatherStart = clamp(Number(config.morphPhases.gatherStart), 0.05, 0.95);

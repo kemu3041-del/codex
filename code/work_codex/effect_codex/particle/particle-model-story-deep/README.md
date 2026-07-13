@@ -2,16 +2,17 @@
 
 ## 实现思路
 
-这是一个 HTML 驱动的多模型粒子背景组件。`index.html` 保存业务图文、模型配置和 GSAP 时间轴参数；React 只挂载固定 Three.js Canvas，并暴露模型插值 API。页面使用浏览器常规滚动，没有整屏切换、粘性定位或滚动吸附。
+这是一个 HTML 驱动的多模型粒子沉浸板块。`index.html` 保存业务图文、模型配置和 GSAP 时间轴参数；React 只挂载固定 Three.js Canvas，并暴露模型插值 API。页面整体仍是长页面，其中 `#particle-story-content` 进入视口后使用 ScrollTrigger pin 成一屏沉浸段，滚动进度驱动 4 段文案、空间粒子和产品粒子切换。
 
 ## 技术拆解
 
 - 所有 GLB 预加载后生成等长粒子目标数组。
 - 单套 Points 在两个模型目标间实时插值，不会同时绘制多套粒子。
-- `story-timeline.js` 根据相邻 HTML 章节中心点计算滚动进度。
+- `story-timeline.js` 在 pinned 模式下按固定滚动距离计算段落进度；普通模式仍可按相邻 HTML 章节中心点计算。
 - 进度直接写入 Shader uniform，滚动多少就变化多少；反向滚动完全可逆。
-- GSAP ScrollTrigger 同时读取 HTML 的文案节点和 `data-*` 参数，控制图文淡入、停留和淡出。
-- 每个模型可以配置不同颜色、可见粒子数量和粒径倍率。
+- GSAP ScrollTrigger 读取 HTML 的 `data-*` 参数，控制板块 pin、文案激活、模型切换和背景形状过渡。
+- 背景空间粒子拆成远景尘埃、中景流线和前景大颗粒三层，共同营造滚动穿行感。
+- 每个模型可以配置不同颜色、可见粒子数量、粒径倍率、模型位置和镜头偏移。
 
 ## 文件职责
 
@@ -44,9 +45,11 @@ particle-model-story/
 ```
 
 - `data-model-index`：绑定 `PARTICLE_STORY_CONFIG.models` 中的模型。
+- `data-shape-index`：绑定背景空间粒子的形状簇。
+- `data-model-x`：当前段落中产品粒子主体的横向位置。
 - `data-copy-in`：淡入阶段占当前章节时间轴的比例。
 - `data-copy-out`：淡出阶段占比。
-- `data-story-animate`：加入 GSAP 图文时间轴的节点。
+- `data-story-animate`：普通模式下加入 GSAP 图文时间轴；pinned 模式下随段落整体激活。
 
 ## 模型变量
 
@@ -58,11 +61,36 @@ particle-model-story/
   particleColor: '#c9ef18',
   highlightColor: '#ffffff',
   particleCount: { desktop: 3200, mobile: 1600 },
-  particleSizeScale: 1
+  particleSizeScale: 1,
+  focusY: 0,
+  focusZ: 0,
+  cameraBias: 0
 }
 ```
 
-不同模型的粒子数量允许不同。GPU 使用配置中的最大数量作为 Buffer 长度，较少粒子的模型会把多余粒子透明度降为 0，因此仍能连续变形。
+不同模型的粒子数量允许不同。GPU 使用配置中的最大数量作为 Buffer 长度，较少粒子的模型会把多余粒子透明度降为 0，因此仍能连续变形。`focusY`、`focusZ` 和 `cameraBias` 用于让复用模型在不同段落中拥有不同构图。
+
+## 沉浸板块变量
+
+`window.PARTICLE_STORY_CONFIG` 中的关键舞台参数：
+
+```js
+{
+  stageMode: 'pinned',
+  sectionsPerViewport: 1,
+  environment: {
+    layers: {
+      far: { countRatio: 0.5, sizeScale: 0.68, speed: 0.54, opacity: 0.62 },
+      mid: { countRatio: 0.34, sizeScale: 1.08, speed: 1.12, opacity: 0.9 },
+      near: { countRatio: 0.16, sizeScale: 2.05, speed: 1.78, opacity: 1.08 }
+    }
+  }
+}
+```
+
+- `stageMode: 'pinned'`：将故事板块固定为一屏沉浸段。
+- `sectionsPerViewport`：每个段落占用的滚动视口高度，数值越大节奏越慢。
+- `environment.layers`：控制远景、中景、前景粒子的数量比例、尺寸、滚动速度和透明度。
 
 ## 图文时间轴变量
 
@@ -86,4 +114,4 @@ npm run build
 npm run dev
 ```
 
-重点验证普通连续滚动、任意中间滚动位置的模型形态、反向滚动、不同模型颜色和粒子数量、HTML 文案时间轴、移动端以及控制台错误。
+重点验证进入板块后的 pin 效果、4 段文案切换、任意中间滚动位置的模型形态、反向滚动、不同模型颜色和粒子数量、移动端布局以及控制台错误。构建时 Vite 仍会提示 Three.js/React 主包超过 500KB；如需线上首屏极致性能，后续再做代码拆分和模型按段预加载。
