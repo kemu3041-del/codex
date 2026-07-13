@@ -60,18 +60,18 @@ const storyParticleShader = {
       float exitProgress = uModelExit;
       float enterProgress = uModelEnter;
       float pairMix = uPairMix;
-      float exitScale = mix(0.84, 4.8, pow(exitProgress, 1.12));
-      float enterScale = mix(0.28, 1.06, enterProgress);
+      float exitScale = mix(0.9, 6.2, pow(exitProgress, 1.08));
+      float enterScale = mix(0.18, 1.08, enterProgress);
       float gatherDistance = 1.0 - enterProgress;
 
       vec3 exitPosition = fromPosition * exitScale;
-      exitPosition.z += exitProgress * 2.8;
-      exitPosition += direction * uScatterStrength * 0.045 * exitProgress;
+      exitPosition.z += exitProgress * 3.8;
+      exitPosition += direction * uScatterStrength * 0.09 * exitProgress;
 
       vec3 enterPosition = toPosition * enterScale;
-      enterPosition.z -= gatherDistance * 8.8;
-      enterPosition += direction * uScatterStrength * 0.26 * gatherDistance;
-      enterPosition += tangent * sin(phase * 0.91) * uCurlStrength * 0.08 * gatherDistance;
+      enterPosition.z -= gatherDistance * 11.4;
+      enterPosition += direction * uScatterStrength * 0.34 * gatherDistance;
+      enterPosition += tangent * sin(phase * 0.91) * uCurlStrength * 0.12 * gatherDistance;
 
       vec3 transformed = mix(exitPosition, enterPosition, pairMix);
 
@@ -87,11 +87,11 @@ const storyParticleShader = {
 
       // 切换时不显示 from/to 形变过程：旧主体先淡出，新主体再从远处淡入。
       vColor = mix(fromColor, toColor, pairMix);
-      float exitOpacity = fromOpacity * (1.0 - smoothstep(0.34, 0.52, uTransition));
-      float enterOpacity = toOpacity * smoothstep(0.56, 0.82, uTransition);
+      float exitOpacity = fromOpacity * (1.0 - smoothstep(0.28, 0.5, uTransition));
+      float enterOpacity = toOpacity * smoothstep(0.5, 0.86, uTransition);
       vOpacity = mix(exitOpacity, enterOpacity, pairMix);
-      float exitSize = fromSize * mix(1.0, 1.55, exitProgress);
-      float enterSize = toSize * mix(0.72, 1.0, enterProgress);
+      float exitSize = fromSize * mix(1.0, 1.86, exitProgress);
+      float enterSize = toSize * mix(0.58, 1.0, enterProgress);
       float pointSize = mix(exitSize, enterSize, pairMix);
       vec4 viewPosition = modelViewMatrix * vec4(transformed, 1.0);
       float attenuation = 250.0 / max(1.0, -viewPosition.z);
@@ -122,6 +122,9 @@ const environmentParticleShader = {
     attribute float particleDepth;
     attribute float particleSeed;
     attribute float particleCluster;
+    attribute float particleLayerSize;
+    attribute float particleLayerSpeed;
+    attribute float particleLayerOpacity;
     attribute vec3 particleColor;
 
     uniform float uPixelRatio;
@@ -141,15 +144,18 @@ const environmentParticleShader = {
       float toVolume = 1.0 - step(0.5, abs(particleCluster - uToVolume));
       float isVolumeParticle = step(0.0, particleCluster);
 
-      // 所有背景粒子共用同一套滚动穿行机制，形状粒子只是一种初始排布。
-      transformed.z += uStoryDepth * uTravelStrength * (0.38 + particleDepth * 0.92);
+      // 三层粒子使用不同滚动速度，前景颗粒掠过更快，远景尘埃保持稳定纵深。
+      transformed.z += uStoryDepth * uTravelStrength * particleLayerSpeed * (0.38 + particleDepth * 0.92);
 
       // 所有背景粒子使用同样的静止漂浮公式，避免形状簇成为独立动画层。
       float floatStrength = mix(0.16, 0.48, particleDepth);
       transformed.x += sin(uTime * 0.16 + particleSeed * 18.0) * floatStrength;
       transformed.y += cos(uTime * 0.13 + particleSeed * 12.0) * floatStrength * 0.72;
-      // 滚动时给背景粒子场一个轻微 Y 轴旋转，配合相机横移产生绕场景推进的感觉。
-      float sweepAngle = (uStoryDepth - 0.5) * 0.28 + sin(uStoryDepth * 6.2831853) * 0.12;
+      // 滚动时叠加横向流线和 Y 轴旋转，避免背景像静态噪点贴图。
+      float flow = uStoryDepth * 6.2831853 + particleSeed * 9.0;
+      transformed.x += sin(flow) * particleLayerSpeed * 0.82;
+      transformed.y += cos(flow * 0.72) * particleLayerSpeed * 0.28;
+      float sweepAngle = (uStoryDepth - 0.5) * 0.42 * particleLayerSpeed + sin(uStoryDepth * 6.2831853) * 0.16;
       float sweepCos = cos(sweepAngle);
       float sweepSin = sin(sweepAngle);
       transformed.xz = vec2(
@@ -161,11 +167,11 @@ const environmentParticleShader = {
       float depthAttenuation = 290.0 / max(1.0, -viewPosition.z);
       float foregroundBoost = mix(0.78, 2.9, particleDepth);
       float zoomBoost = mix(1.0, 1.75, uStoryDepth * particleDepth);
-      gl_PointSize = max(0.8, particleSize * foregroundBoost * zoomBoost * depthAttenuation * uPixelRatio);
+      gl_PointSize = max(0.8, particleSize * particleLayerSize * foregroundBoost * zoomBoost * depthAttenuation * uPixelRatio);
       gl_Position = projectionMatrix * viewPosition;
 
       vColor = particleColor;
-      vOpacity = mix(0.28, 0.88, particleDepth) * mix(0.72, 1.0, uStoryDepth);
+      vOpacity = mix(0.28, 0.88, particleDepth) * particleLayerOpacity * mix(0.72, 1.0, uStoryDepth);
       float outgoingOpacity = fromVolume * mix(1.0, 0.18, smoothstep(0.72, 1.0, uVolumeProgress));
       float incomingOpacity = toVolume * smoothstep(0.0, 0.64, uVolumeProgress);
       float volumeOpacity = max(outgoingOpacity, incomingOpacity);
@@ -281,12 +287,19 @@ function DepthParticleField({ config, deviceKey, profile, storyDepthRef, volumeS
     const depths = new Float32Array(count);
     const seeds = new Float32Array(count);
     const clusters = new Float32Array(count);
+    const layerSizes = new Float32Array(count);
+    const layerSpeeds = new Float32Array(count);
+    const layerOpacities = new Float32Array(count);
     const gold = new THREE.Color('#d5df68');
     const white = new THREE.Color('#eef6ed');
     const green = new THREE.Color('#76d677');
     const dark = new THREE.Color('#0a2517');
     const color = new THREE.Color();
     const volumeScale = envConfig.volumeScale;
+    const layers = envConfig.layers;
+    const totalLayerRatio = layers.far.countRatio + layers.mid.countRatio + layers.near.countRatio;
+    const farThreshold = layers.far.countRatio / totalLayerRatio;
+    const midThreshold = farThreshold + layers.mid.countRatio / totalLayerRatio;
     const volumeClusters = [
       { type: 'sphere', center: [-12.2, 3.2, -13.8], radius: 4.9 * volumeScale, height: 0 },
       { type: 'cylinder', center: [13.4, -0.6, -10.6], radius: 2.8 * volumeScale, height: 10.8 * volumeScale },
@@ -298,6 +311,12 @@ function DepthParticleField({ config, deviceKey, profile, storyDepthRef, volumeS
     for (let index = 0; index < count; index += 1) {
       const offset = index * 3;
       const seed = index + 1;
+      const layerPick = seededRandom(seed * 4.05);
+      const layer = layerPick < farThreshold
+        ? layers.far
+        : layerPick < midThreshold
+          ? layers.mid
+          : layers.near;
       const isVolumeParticle = seededRandom(seed * 19.1) < envConfig.volumeRatio;
       const foreground = seededRandom(seed * 9.7) < envConfig.foregroundRatio;
       const depth = foreground
@@ -326,9 +345,9 @@ function DepthParticleField({ config, deviceKey, profile, storyDepthRef, volumeS
         }
       } else {
         // 横向带状分布让空间粒子包围主模型，而不是均匀铺成噪点背景。
-        positions[offset] = sideBias * envConfig.spreadX * 0.5 + band * 1.6;
+        positions[offset] = sideBias * envConfig.spreadX * 0.5 + band * 1.6 * layer.speed;
         positions[offset + 1] = (seededRandom(seed * 3.1) - 0.5) * envConfig.spreadY + Math.sin(seed * 0.13) * 1.2;
-        positions[offset + 2] = THREE.MathUtils.lerp(-envConfig.spreadZ, 4.5, depth);
+        positions[offset + 2] = THREE.MathUtils.lerp(-envConfig.spreadZ * layer.speed, 5.4, depth);
       }
 
       const colorPick = seededRandom(seed * 8.2);
@@ -348,9 +367,12 @@ function DepthParticleField({ config, deviceKey, profile, storyDepthRef, volumeS
       depths[index] = depth;
       seeds[index] = seededRandom(seed * 17.9);
       clusters[index] = isVolumeParticle ? Math.floor(seededRandom(seed * 20.7) * volumeClusters.length) : -1;
+      layerSizes[index] = layer.sizeScale;
+      layerSpeeds[index] = layer.speed;
+      layerOpacities[index] = layer.opacity;
     }
 
-    return { positions, colors, sizes, depths, seeds, clusters };
+    return { positions, colors, sizes, depths, seeds, clusters, layerSizes, layerSpeeds, layerOpacities };
   }, [count, envConfig]);
 
   const uniforms = useMemo(() => ({
@@ -389,6 +411,9 @@ function DepthParticleField({ config, deviceKey, profile, storyDepthRef, volumeS
         <bufferAttribute attach="attributes-particleDepth" args={[particleData.depths, 1]} />
         <bufferAttribute attach="attributes-particleSeed" args={[particleData.seeds, 1]} />
         <bufferAttribute attach="attributes-particleCluster" args={[particleData.clusters, 1]} />
+        <bufferAttribute attach="attributes-particleLayerSize" args={[particleData.layerSizes, 1]} />
+        <bufferAttribute attach="attributes-particleLayerSpeed" args={[particleData.layerSpeeds, 1]} />
+        <bufferAttribute attach="attributes-particleLayerOpacity" args={[particleData.layerOpacities, 1]} />
       </bufferGeometry>
       <shaderMaterial
         ref={materialRef}
@@ -418,6 +443,9 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
   const activePairRef = useRef([-1, -1]);
   const storyDepthRef = useRef(0);
   const modelFocusXRef = useRef(0);
+  const modelFocusYRef = useRef(0);
+  const modelFocusZRef = useRef(0);
+  const cameraBiasRef = useRef(0);
   const volumeStateRef = useRef({ from: 0, to: 0, progress: 0 });
   const cameraTargetRef = useRef(new THREE.Vector3());
   const pointerRef = useRef(new THREE.Vector2(999, 999));
@@ -494,6 +522,9 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
     progress,
     storyProgress = progress,
     modelX = 0,
+    modelY = 0,
+    modelZ = 0,
+    cameraBias = 0,
     fromShapeIndex = 0,
     toShapeIndex = fromShapeIndex,
     shapeProgress = 0
@@ -521,8 +552,16 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
     const safeModelX = deviceKey === 'mobile'
       ? 0
       : THREE.MathUtils.clamp(Number(modelX) || 0, -5.2, 5.2);
+    const safeModelY = THREE.MathUtils.clamp(Number(modelY) || 0, -2.4, 2.4);
+    const safeModelZ = THREE.MathUtils.clamp(Number(modelZ) || 0, -3.2, 3.2);
+    const safeCameraBias = deviceKey === 'mobile'
+      ? 0
+      : THREE.MathUtils.clamp(Number(cameraBias) || 0, -2.2, 2.2);
     storyDepthRef.current = safeStoryProgress;
     modelFocusXRef.current = safeModelX;
+    modelFocusYRef.current = safeModelY;
+    modelFocusZRef.current = safeModelZ;
+    cameraBiasRef.current = safeCameraBias;
     volumeStateRef.current = {
       from: THREE.MathUtils.clamp(Math.round(fromShapeIndex), 0, 4),
       to: THREE.MathUtils.clamp(Math.round(toShapeIndex), 0, 4),
@@ -546,6 +585,8 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
     document.documentElement.dataset.particleShaderProgress = safeProgress.toFixed(4);
     document.documentElement.dataset.particleStoryDepth = safeStoryProgress.toFixed(4);
     document.documentElement.dataset.particleModelX = safeModelX.toFixed(2);
+    document.documentElement.dataset.particleModelY = safeModelY.toFixed(2);
+    document.documentElement.dataset.particleModelZ = safeModelZ.toFixed(2);
     document.documentElement.dataset.particleActiveVolume = String(
       volumeStateRef.current.progress < 0.5 ? volumeStateRef.current.from : volumeStateRef.current.to
     );
@@ -561,6 +602,9 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
         progress,
         storyProgress,
         modelX,
+        modelY,
+        modelZ,
+        cameraBias,
         fromShapeIndex,
         toShapeIndex,
         shapeProgress
@@ -571,6 +615,9 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
         progress,
         storyProgress,
         modelX,
+        modelY,
+        modelZ,
+        cameraBias,
         fromShapeIndex,
         toShapeIndex,
         shapeProgress
@@ -625,7 +672,7 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
     uniforms.uTime.value = state.clock.elapsedTime;
     const depthProgress = storyDepthRef.current;
     const targetCameraZ = THREE.MathUtils.lerp(profile.cameraZ + 1.8, profile.cameraZ - 1.15, depthProgress);
-    const targetCameraX = THREE.MathUtils.lerp(0.28, 1.72, depthProgress) + Math.sin(depthProgress * Math.PI) * 0.24;
+    const targetCameraX = THREE.MathUtils.lerp(0.28, 1.72, depthProgress) + Math.sin(depthProgress * Math.PI) * 0.24 + cameraBiasRef.current;
     const targetCameraY = Math.sin(depthProgress * Math.PI) * 0.24;
     camera.position.z = THREE.MathUtils.damp(camera.position.z, targetCameraZ, 2.6, delta);
     camera.position.x = THREE.MathUtils.damp(camera.position.x, targetCameraX, 2.4, delta);
@@ -640,7 +687,8 @@ function ParticleStoryScene({ config, deviceKey, profile, onReady }) {
       const modelScale = THREE.MathUtils.lerp(0.78, 1.06, depthProgress);
       modelGroupRef.current.scale.setScalar(THREE.MathUtils.damp(modelGroupRef.current.scale.x, modelScale, 3.2, delta));
       modelGroupRef.current.position.x = THREE.MathUtils.damp(modelGroupRef.current.position.x, modelFocusXRef.current, 3.4, delta);
-      modelGroupRef.current.position.z = THREE.MathUtils.damp(modelGroupRef.current.position.z, depthProgress * 0.38, 3.2, delta);
+      modelGroupRef.current.position.y = THREE.MathUtils.damp(modelGroupRef.current.position.y, modelFocusYRef.current, 3.2, delta);
+      modelGroupRef.current.position.z = THREE.MathUtils.damp(modelGroupRef.current.position.z, depthProgress * 0.38 + modelFocusZRef.current, 3.2, delta);
     }
     pointerActivityRef.current = THREE.MathUtils.damp(pointerActivityRef.current, 0, 3.2, delta);
     if (pointerActivityRef.current > 0.002) {

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>矩阵粒子随机缩放与透明度Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            /* 深色背景效果更好 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 外层的大长方形矩形容器 */
+        #canvas-container {
+            width: 100vw;
+            height: 10vw;
+            border: 2px solid #333;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            background-color: #1a1a1a;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="canvas-container">
+        <canvas id="matrixCanvas"></canvas>
+    </div>
+
+    <script>
+        const container = document.getElementById('canvas-container');
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // 1. 获取容器的实际宽高
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+
+        // === 动态配置参数 ===
+        const rows = 20;          // 1. 固定行数
+        const gap = 4;            // 2. 格子之间的间距
+
+        // 3. 动态计算：在固定行数和间距下，每个正方形格子的绝对高度（也就是宽度）
+        // 公式：(总高度 - 所有间距的高度) / 行数
+        const rectHeight = (height - (rows + 1) * gap) / rows;
+        const rectWidth = rectHeight; // 强制宽高相等，确保绝对是正方形
+
+        // 4. 动态计算：根据格子的宽度，算出容器里横向最多能容纳多少列
+        // 公式：(总宽度 - 一个初始间距) / (一个格子宽度 + 一个间距)
+        const cols = Math.floor((width - gap) / (rectWidth + gap));
+
+        // 5. 居中修正（可选）
+        // 因为非整除可能会在右侧留下一截空白，计算出左侧初始偏移量，让整体居中
+        const actualGridWidth = cols * (rectWidth + gap) + gap;
+        const offsetX = (width - actualGridWidth) / 2;
+
+        // 存储所有小矩形的初始状态
+        const rectangles = [];
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                // 计算每个小正方形的中心点坐标（加入了 offsetX 让画面居中）
+                const x = offsetX + gap + c * (rectWidth + gap) + rectWidth / 2;
+                const y = gap + r * (rectHeight + gap) + rectHeight / 2;
+
+                rectangles.push({
+                    centerX: x,
+                    centerY: y,
+                    timeOffset: Math.random() * Math.PI * 2,
+                    speed: 0.02 + Math.random() * 0.03
+                });
+            }
+        }
+
+        // === 动画主循环 ===
+        function animate() {
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+
+            rectangles.forEach(rect => {
+                // 递增每个矩形的时间状态
+                rect.timeOffset += rect.speed;
+
+                // 使用 Math.sin 将数值限制在 [-1, 1]，再转换到 [0.1, 1] 范围内
+                // 这样能保证缩放和透明度是平滑过渡，而不是闪烁
+                const factor = (Math.sin(rect.timeOffset) + 1) / 2; // 范围 0 到 1
+
+                // 1. 控制透明度：从 0.1 到 1.0 随机平滑变化
+                const alpha = 0.1 + factor * 0.9;
+
+                // 2. 控制缩放：从 0.2倍 到 1.0倍 随机平滑变化
+                const scale = 0.2 + factor * 0.8;
+                const currentW = rectWidth * scale;
+                const currentH = rectHeight * scale;
+
+                // 绘制小矩形（保持中心点对齐进行缩放）
+                ctx.fillStyle = `rgba(0, 150, 255, ${alpha})`; // 经典科技蓝，可换成其他颜色
+                ctx.fillRect(
+                    rect.centerX - currentW / 2,
+                    rect.centerY - currentH / 2,
+                    currentW,
+                    currentH
+                );
+            });
+
+            // 循环调用
+            requestAnimationFrame(animate);
+        }
+
+        // 启动动画
+        animate();
+    </script>
+</body>
+
+</html>

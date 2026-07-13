@@ -39,3 +39,26 @@ test('阶段顺序错误时回退默认边界', () => {
     gatherStart: 0.6
   });
 });
+
+// pinned 模式是长页面内沉浸板块的滚动契约，配置层需要给时间轴脚本稳定入口。
+test('合并 pinned 舞台与三层环境粒子配置', () => {
+  // 只覆盖中景数量时，远景和前景应继续保留默认参数。
+  window.PARTICLE_STORY_CONFIG = {
+    stageMode: 'pinned',
+    sectionsPerViewport: 1.25,
+    environment: {
+      layers: {
+        mid: { countRatio: 0.5, speed: 1.4 }
+      }
+    }
+  };
+
+  const config = getStoryConfig();
+
+  assert.equal(config.stageMode, 'pinned');
+  assert.equal(config.sectionsPerViewport, 1.25);
+  assert.equal(config.environment.layers.mid.countRatio, 0.5);
+  assert.equal(config.environment.layers.mid.speed, 1.4);
+  assert.equal(typeof config.environment.layers.far.countRatio, 'number');
+  assert.equal(typeof config.environment.layers.near.sizeScale, 'number');
+});
